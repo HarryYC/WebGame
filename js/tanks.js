@@ -16,7 +16,58 @@ var cursors;
 var bullets;
 var fireRate = 100;
 var nextFire = 0;
+var ready = false;
+var eurecaServer;
 
+
+var eurecaClientSetup = function() {
+	var eurecaClient = new Eureca.Client();
+	eurecaClient.ready(function (proxy) {		
+		eurecaServer = proxy;
+	});
+	
+	
+	//methods defined under "exports" namespace become available in the server side
+	
+	eurecaClient.exports.setId = function(id) 
+	{
+		//create() is moved here to make sure nothing is created before uniq id assignation
+		myId = id;
+		create();
+		eurecaServer.handshake();
+		ready = true;
+	}	
+	
+	eurecaClient.exports.kill = function(id)
+	{	
+		if (tanksList[id]) {
+			tanksList[id].kill();
+			console.log('killing ', id, tanksList[id]);
+		}
+	}	
+	
+	eurecaClient.exports.spawnEnemy = function(i, x, y)
+	{
+		
+		if (i == myId) return; //this is me
+		
+		console.log('SPAWN');
+		var tnk = new Survive(i, game, tank);
+		tanksList[i] = tnk;
+	}
+	
+  	eurecaClient.exports.updateState = function(id, state)
+	{
+		if (tanksList[id])  {
+			tanksList[id].cursor = state;
+			tanksList[id].tank.x = state.x;
+			tanksList[id].tank.y = state.y;
+			tanksList[id].tank.angle = state.angle;
+			tanksList[id].turret.rotation = state.rot;
+			tanksList[id].update();
+		}
+	}
+}
 
 Survive = function (index, game, player) {
 	this.cursor = {
@@ -82,38 +133,63 @@ Survive = function (index, game, player) {
 
 Survive.prototype.update = function() {
 		
-	for (var i in this.input) this.cursor[i] = this.input[i];	
+	//for (var i in this.input) this.cursor[i] = this.input[i];	
+		var inputChanged = (
+		this.cursor.left != this.input.left ||
+		this.cursor.right != this.input.right ||
+		this.cursor.up != this.input.up ||
+    this.cursor.down != this.input.down ||
+		this.cursor.fire != this.input.fire
+	);
 	
+	
+	if (inputChanged)
+	{
+		//Handle input change here
+		//send new values to the server		
+		if (this.tank.id == myId)
+		{
+			// send latest valid state to the server
+			this.input.x = this.tank.x;
+			this.input.y = this.tank.y;
+			this.input.angle = this.tank.angle;
+			this.input.rot = this.turret.rotation;
+			
+			
+			eurecaServer.handleKeys(this.input);
+			
+		}
+	}
 	
 	
     if (this.cursor.left)
     {
-        this.tank.x += -5;
-        // this.tank.angle = 180;
-        // this.currentSpeed = 300;
+        // this.tank.x += -2;
+        this.tank.angle = 180;
+        this.currentSpeed = 300;
         //this.tank.body.velocity.x = 300
     }
     else if (this.cursor.right)
     {
-        this.tank.x += 5;
-        // this.tank.angle = 0;
-        // this.currentSpeed = 300;
+        // this.tank.x += 2;
+        this.tank.angle = 0;
+        this.currentSpeed = 300;
 
     }	
     if (this.cursor.up)
     {
-        this.tank.y += -5;
+        // this.tank.y += -2;
         //  The speed we'll travel at
-        // this.tank.angle = 270;
-        // this.currentSpeed = 300;
+        this.tank.angle = 270;
+        this.currentSpeed = 300;
                
 
     }
     if (this.cursor.down)
     {
-        this.tank.y += 5;
-        // this.tank.angle = 90;
-        // this.currentSpeed = 300;
+        // this.tank.y += 2;
+        this.tank.angle = 90;
+        this.currentSpeed = 300;
     }
     else
     {
@@ -169,7 +245,8 @@ Survive.prototype.kill = function() {
 	this.shadow.kill();
 }
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+//var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: eurecaClientSetup, update: update, render: render });
 
 function preload () {
 
@@ -241,7 +318,7 @@ function removeLogo () {
 }
 
 function update () {
-	
+	if (!ready) return;
 	player.input.left = cursors.left.isDown;
 	player.input.right = cursors.right.isDown;
 	player.input.up = cursors.up.isDown;
