@@ -1,13 +1,16 @@
 var express = require('express')
   , app = express(app)
   , server = require('http').createServer(app);
+  
+var zombieList;
+var zombieID = 0;
 
 app.use(express.static(__dirname));
 
 var EurecaServer = require('eureca.io').EurecaServer;
 //var eurecaServer = new EurecaServer();
-// var eurecaServer = new EurecaServer({allow:['setId', 'spawnEnemy', 'kill']});
-var eurecaServer = new EurecaServer({allow:['setId', 'spawnEnemy', 'kill', 'updateState']});
+// var eurecaServer = new EurecaServer({allow:['setId', 'spawnPlayer', 'kill']});
+var eurecaServer = new EurecaServer({allow:['setId', 'spawnPlayer','spawnZombie', 'kill', 'updateState']});
 var clients = {};
 eurecaServer.attach(server);
 
@@ -16,6 +19,7 @@ eurecaServer.onConnect(function (conn){
       var remote = eurecaServer.getClient(conn.id);    
       clients[conn.id] = {id:conn.id, remote:remote}
       remote.setId(conn.id);	
+  console.log(clients);    
 });
 
 eurecaServer.onDisconnect(function (conn){
@@ -41,7 +45,10 @@ eurecaServer.exports.handshake = function()
 		{		
       var x = clients[cc].laststate ? clients[cc].laststate.x:  0;
 			var y = clients[cc].laststate ? clients[cc].laststate.y:  0;
-			remote.spawnEnemy(clients[cc].id, x, y);		
+      remote.spawnPlayer(clients[cc].id, x, y);		
+      //remote.spawnZombie(1, 11, 11);		
+      //remote.spawnZombie(2, x, y);		
+
 		}
 	}
 }
