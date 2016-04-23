@@ -20,6 +20,8 @@ var eurecaServer;
 var zombieList;
 var zombieID = 0;
 var playerID;
+//-------temp var for spawnZombie test-------//
+var tempZombie = 1;
 var eurecaClientSetup = function() {
 	var eurecaClient = new Eureca.Client();
 	eurecaClient.ready(function (proxy) {		
@@ -61,7 +63,7 @@ var eurecaClientSetup = function() {
   
   eurecaClient.exports.spawnZombie = function(zombieID, x, y, playerID)
 	{
-    if (zombieID == 1 || zombieID == 2){
+    if (zombieID == tempZombie++){
 		console.log('SPAWN ZOMBIE');
     console.log(playerID);
     var tnk1 = new EnemyTank(zombieID, game,playersList[playerID].tank);
