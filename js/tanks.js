@@ -345,7 +345,8 @@ function preload () {
     game.load.image('zombie1', 'assets/zombie1.png');
     game.load.image('bullet', 'assets/bullet.png');
     game.load.image('grass', 'assets/light_grass.png');
-    game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
+    //game.load.spritesheet('kaboom1', 'assets/explosion.png', 64, 64, 23);
+    game.load.spritesheet('kaboom', 'assets/blood.png', 150, 150, 6);
     
 }
 
@@ -452,6 +453,9 @@ function bulletHitPlayer (gameObj, bullet) {
     console.log(targetSurvive);
     bullet.kill();
     playersList[killtest].kill();
+    var explosionAnimation = explosions.getFirstExists(false);
+    explosionAnimation.reset(111, 111);
+    explosionAnimation.play('kaboom', 30, false, true);
 }
 
 function render () {
