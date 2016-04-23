@@ -19,7 +19,7 @@ var ready = false;
 var eurecaServer;
 var zombieList;
 var zombieID = 0;
-
+var playerID;
 var eurecaClientSetup = function() {
 	var eurecaClient = new Eureca.Client();
 	eurecaClient.ready(function (proxy) {		
@@ -57,11 +57,12 @@ var eurecaClientSetup = function() {
 
 	}
   
-  eurecaClient.exports.spawnZombie = function(zombieID, x, y)
+  eurecaClient.exports.spawnZombie = function(zombieID, x, y, playerID)
 	{
     if (zombieID == 1 || zombieID == 2){
-		console.log('SPAWN');
-    var tnk1 = new EnemyTank(zombieID, game, tank);
+		console.log('SPAWN ZOMBIE');
+    console.log(playerID);
+    var tnk1 = new EnemyTank(zombieID, game,tank);
     playersList[zombieID] = tnk1;
     }
     else{
@@ -82,7 +83,7 @@ var eurecaClientSetup = function() {
 	}
 }
 
-EnemyTank = function (index, game, player) {
+EnemyTank = function (index, game, player, bullets) {
 
     var x = 0;
     var y = 0;
@@ -118,7 +119,7 @@ EnemyTank = function (index, game, player) {
 
     this.tank.angle = game.rnd.angle();
 
-    game.physics.arcade.velocityFromRotation(this.tank.rotation, 50, this.tank.body.velocity);
+    game.physics.arcade.velocityFromRotation(this.tank.rotation, 150, this.tank.body.velocity);
 
 };
 
@@ -354,7 +355,7 @@ function preload () {
     game.load.spritesheet('test', 'assets/player.png',107,70,19);
     // game.load.image('test', 'assets/player/survivor-idle_shotgun_1.png');
     game.load.image('bullet', 'assets/bullet.png');
-    game.load.image('earth', 'assets/scorched_earth.png');
+    game.load.image('earth', 'assets/light_grass.png');
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     
 }

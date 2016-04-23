@@ -15,15 +15,16 @@ var clients = {};
 eurecaServer.attach(server);
 
 eurecaServer.onConnect(function (conn){
-  console.log('New Client id=%s ', conn.id, conn.remoteAddress);
+  //console.log('New Client id=%s ', conn.id, conn.remoteAddress);
       var remote = eurecaServer.getClient(conn.id);    
       clients[conn.id] = {id:conn.id, remote:remote}
       remote.setId(conn.id);	
-  console.log(clients);    
+  console.log(clients[Object.keys(clients)[0]].id);    
+
 });
 
 eurecaServer.onDisconnect(function (conn){
-  console.log('Client disconnected ', conn.id);
+  //console.log('Client disconnected ', conn.id);
   var removeId = clients[conn.id].id;
 	
 	delete clients[conn.id];
@@ -46,7 +47,9 @@ eurecaServer.exports.handshake = function()
       var x = clients[cc].laststate ? clients[cc].laststate.x:  0;
 			var y = clients[cc].laststate ? clients[cc].laststate.y:  0;
       remote.spawnPlayer(clients[cc].id, x, y);		
-      //remote.spawnZombie(1, 11, 11);		
+      console.log(clients[Object.keys(clients)[0]].id);
+      remote.spawnZombie(1, 11, 11, clients[Object.keys(clients)[0]].id); 
+      //**need to be changed to random		
       //remote.spawnZombie(2, x, y);		
 
 		}
