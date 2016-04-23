@@ -65,8 +65,7 @@ var eurecaClientSetup = function() {
 	{
     if (zombieID == tempZombie++){
 		console.log('SPAWN ZOMBIE');
-    console.log(playerID);
-    var tnk1 = new EnemyTank(zombieID, game,playersList[playerID].tank);
+    var tnk1 = new EnemyZombie(zombieID, game,playersList[playerID].tank);
     playersList[zombieID] = tnk1;
     //console.log(tank);
     //console.log(playersList[playerID].tank);
@@ -90,48 +89,49 @@ var eurecaClientSetup = function() {
 	}
 }
 
-EnemyTank = function (index, game, player) {
+EnemyZombie = function (index, game, player) {
 
     var x = 0;
     var y = 0;
 
     this.game = game;
     this.health = 3;
-    console.log(player);
     this.player = player;
-    this.bullets = game.add.group();
-    this.bullets.enableBody = true;
-    this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-    this.bullets.createMultiple(20, 'bullet', 0, false);
-    this.bullets.setAll('anchor.x', -1);
-    this.bullets.setAll('anchor.y', -0.5);
-    this.bullets.setAll('outOfBoundsKill', true);
-    this.bullets.setAll('checkWorldBounds', true);	
-    this.fireRate = 1000;
-    this.nextFire = 0;
+    // this.bullets = game.add.group();
+    // this.bullets.enableBody = true;
+    // this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
+    // this.bullets.createMultiple(20, 'bullet', 0, false);
+    // this.bullets.setAll('anchor.x', -1);
+    // this.bullets.setAll('anchor.y', -0.5);
+    // this.bullets.setAll('outOfBoundsKill', true);
+    // this.bullets.setAll('checkWorldBounds', true);	
+    // this.fireRate = 1000;
+    // this.nextFire = 0;
     this.alive = true;
 
     this.shadow = game.add.sprite(x, y, 'enemy', 'shadow');
-    this.tank = game.add.sprite(x, y, 'enemy', 'tank1');
-    this.turret = game.add.sprite(x, y, 'enemy', 'turret');
+    this.zombie = game.add.sprite(x, y, '');
+    this.turret = game.add.sprite(x, y, 'zombie1');
 
     this.shadow.anchor.set(0.5);
-    this.tank.anchor.set(0.5);
+    this.zombie.anchor.set(0.5);
     this.turret.anchor.set(0.3, 0.5);
 
-    this.tank.name = index.toString();
-    game.physics.enable(this.tank, Phaser.Physics.ARCADE);
-    this.tank.body.immovable = false;
-    this.tank.body.collideWorldBounds = true;
-    this.tank.body.bounce.setTo(1, 1);
+    this.zombie.name = index.toString();
+    game.physics.enable([this.zombie],Phaser.Physics.ARCADE);
+    
+    //this.zombie.body.immovable = false;
+    //this.zombie.body.collideWorldBounds = true;
+    //this.zombie.body.bounce.setTo(1, 1);
 
-    this.tank.angle = game.rnd.angle();
+    //this.zombie.angle = game.rnd.angle();
 
-    game.physics.arcade.velocityFromRotation(this.tank.rotation, 150, this.tank.body.velocity);
+    //game.physics.arcade.velocityFromRotation(this.zombie.rotation, 150, this.zombie.body.velocity);
+    // game.physics.arcade.moveToXY(this.zombie,100,100,300);
 
 };
 
-EnemyTank.prototype.damage = function() {
+EnemyZombie.prototype.damage = function() {
 
     this.health -= 1;
 
@@ -140,7 +140,7 @@ EnemyTank.prototype.damage = function() {
         this.alive = false;
 
         this.shadow.kill();
-        this.tank.kill();
+        this.zombie.kill();
         this.turret.kill();
 
         return true;
@@ -150,30 +150,16 @@ EnemyTank.prototype.damage = function() {
 
 }
 
-EnemyTank.prototype.update = function() {
+EnemyZombie.prototype.update = function() {
 
-    this.shadow.x = this.tank.x;
-    this.shadow.y = this.tank.y;
-    this.shadow.rotation = this.tank.rotation;
+    this.shadow.x = this.zombie.x;
+    this.shadow.y = this.zombie.y;
+    this.shadow.rotation = this.zombie.rotation;
 
-    this.turret.x = this.tank.x;
-    this.turret.y = this.tank.y;
-    //console.log(this.player);
-    this.turret.rotation = this.game.physics.arcade.angleBetween(this.tank, this.player);
-
-    // if (this.game.physics.arcade.distanceBetween(this.tank, this.player) < 300)
-    // {
-        // if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0)
-        // {
-            // this.nextFire = this.game.time.now + this.fireRate;
-
-            // var bullet = this.bullets.getFirstDead();
-
-            // bullet.reset(this.turret.x, this.turret.y);
-
-            // bullet.rotation = this.game.physics.arcade.moveToObject(bullet, this.player, 500);
-        // }
-    // }
+    this.turret.x = this.zombie.x;
+    this.turret.y = this.zombie.y;
+    this.turret.rotation = this.game.physics.arcade.angleBetween(this.zombie, this.player);
+    game.physics.arcade.moveToXY(this.zombie,this.player.x - 30,this.player.y - 30,50);
 
 };
 
@@ -217,7 +203,7 @@ Survive = function (index, game, player) {
 
     this.shadow = game.add.sprite(x, y, 'tank', 'shadow');
     this.tank = game.add.sprite(x, y, '');
-    this.turret = game.add.sprite(x, y, 'test');
+    this.turret = game.add.sprite(x, y, 'player');
     this.breath = this.turret.animations.add('breath');
     this.turret.animations.play('breath',5,true);
 
@@ -342,7 +328,6 @@ Survive.prototype.fire = function(target) {
 
 			bullet.rotation = this.game.physics.arcade.moveToObject(bullet, target, 500);
         }
-    console.log(playersList);  
 }
 
 
@@ -361,7 +346,8 @@ function preload () {
     game.load.atlas('tank', 'assets/tanks.png', 'assets/tanks.json');
     game.load.atlas('enemy', 'assets/enemy-tanks.png', 'assets/tanks.json');
     game.load.image('logo', 'assets/logo.png');
-    game.load.spritesheet('test', 'assets/player.png',107,70,19);
+    game.load.spritesheet('player', 'assets/player.png',107,70,19);
+    game.load.image('zombie1', 'assets/zombie1.png');
     // game.load.image('test', 'assets/player/survivor-idle_shotgun_1.png');
     game.load.image('bullet', 'assets/bullet.png');
     game.load.image('earth', 'assets/light_grass.png');
