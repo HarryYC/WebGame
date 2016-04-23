@@ -1,7 +1,7 @@
 var myId=0;
 var land;
 var shadow;
-var tank;
+var gameObj;
 var turret;
 var breath;
 var player;
@@ -22,6 +22,7 @@ var zombieID = 0;
 var playerID;
 //-------temp var for spawnZombie test-------//
 var tempZombie = 1;
+
 var eurecaClientSetup = function() {
 	var eurecaClient = new Eureca.Client();
 	eurecaClient.ready(function (proxy) {		
@@ -54,7 +55,7 @@ var eurecaClientSetup = function() {
 		if (i == myId) return; //this is me
 		
 		console.log('SPAWN');
-		var tnk = new Survive(i, game, tank);
+		var tnk = new Survive(i, game, gameObj);
 		playersList[i] = tnk;
     console.log(playersList[i]);
 
@@ -68,10 +69,10 @@ var eurecaClientSetup = function() {
     
     if (zombieID == tempZombie++){
 		console.log('SPAWN ZOMBIE');
-    var tnk1 = new EnemyZombie(zombieID, game,playersList[playerID].tank);
+    var tnk1 = new EnemyZombie(zombieID, game,playersList[playerID].gameObj);
     playersList[zombieID] = tnk1;
-    //console.log(tank);
-    //console.log(playersList[playerID].tank);
+    //console.log(gameObj);
+    //console.log(playersList[playerID].gameObj);
 
     }
     else{
@@ -83,9 +84,9 @@ var eurecaClientSetup = function() {
 	{
 		if (playersList[id])  {
 			playersList[id].cursor = state;
-			playersList[id].tank.x = state.x;
-			playersList[id].tank.y = state.y;
-			playersList[id].tank.angle = state.angle;
+			playersList[id].gameObj.x = state.x;
+			playersList[id].gameObj.y = state.y;
+			playersList[id].gameObj.angle = state.angle;
 			playersList[id].turret.rotation = state.rot;
 			playersList[id].update();
 		}
@@ -113,16 +114,16 @@ EnemyZombie = function (index, game, player) {
     this.nextFire = 0;
     this.alive = true;
 
-    this.shadow = game.add.sprite(150, 150, 'enemy', 'shadow');
-    this.tank = game.add.sprite(150, 150, '');
+    this.shadow = game.add.sprite(150, 150, 'shadow');
+    this.gameObj = game.add.sprite(150, 150, '');
     this.turret = game.add.sprite(150, 150, 'zombie1');
 
     this.shadow.anchor.set(0.5);
-    this.tank.anchor.set(0.5);
+    this.gameObj.anchor.set(0.5);
     this.turret.anchor.set(0.3, 0.5);
 
-    this.tank.name = index.toString();
-    game.physics.enable(this.tank, Phaser.Physics.ARCADE);
+    this.gameObj.name = index.toString();
+    game.physics.enable(this.gameObj, Phaser.Physics.ARCADE);
     
 };
 
@@ -135,7 +136,7 @@ EnemyZombie.prototype.damage = function() {
         this.alive = false;
 
         this.shadow.kill();
-        this.tank.kill();
+        this.gameObj.kill();
         this.turret.kill();
 
         return true;
@@ -147,17 +148,17 @@ EnemyZombie.prototype.damage = function() {
 
 EnemyZombie.prototype.update = function() {
 
-    this.shadow.x = this.tank.x;
-    this.shadow.y = this.tank.y;
-    this.shadow.rotation = this.tank.rotation;
+    this.shadow.x = this.gameObj.x;
+    this.shadow.y = this.gameObj.y;
+    this.shadow.rotation = this.gameObj.rotation;
 
-    this.turret.x = this.tank.x;
-    this.turret.y = this.tank.y;
+    this.turret.x = this.gameObj.x;
+    this.turret.y = this.gameObj.y;
     //console.log(this.player);
-    this.turret.rotation = this.game.physics.arcade.angleBetween(this.tank, this.player);
-    game.physics.arcade.moveToXY(this.tank,this.player.x - 30,this.player.y - 30,50);
+    this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
+    game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
 
-    // if (this.game.physics.arcade.distanceBetween(this.tank, this.player) < 300)
+    // if (this.game.physics.arcade.distanceBetween(this.gameObj, this.player) < 300)
     // {
         // if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0)
         // {
@@ -210,27 +211,27 @@ Survive = function (index, game, player) {
     this.nextFire = 0;
     this.alive = true;
 
-    this.shadow = game.add.sprite(x, y, 'tank', 'shadow');
-    this.tank = game.add.sprite(x, y, '');
+    this.shadow = game.add.sprite(x, y, 'shadow');
+    this.gameObj = game.add.sprite(x, y, '');
     this.turret = game.add.sprite(x, y, 'player');
     this.breath = this.turret.animations.add('breath');
     this.turret.animations.play('breath',5,true);
 
     this.shadow.anchor.set(0.5);
-    this.tank.anchor.set(0.5);
+    this.gameObj.anchor.set(0.5);
     this.turret.anchor.set(0.3, 0.5);
 
-    this.tank.id = index;
-    game.physics.enable(this.tank, Phaser.Physics.ARCADE);
-    this.tank.body.immovable = false;
-    this.tank.body.collideWorldBounds = true;
-    this.tank.body.bounce.setTo(0, 0);
-	  this.tank.body.velocity.x = 0;
-	  this.tank.body.velocity.y = 0;
+    this.gameObj.id = index;
+    game.physics.enable(this.gameObj, Phaser.Physics.ARCADE);
+    this.gameObj.body.immovable = false;
+    this.gameObj.body.collideWorldBounds = true;
+    this.gameObj.body.bounce.setTo(0, 0);
+	  this.gameObj.body.velocity.x = 0;
+	  this.gameObj.body.velocity.y = 0;
 
-    this.tank.angle = 0;
+    this.gameObj.angle = 0;
 
-    game.physics.arcade.velocityFromRotation(this.tank.rotation, 0, this.tank.body.velocity);
+    game.physics.arcade.velocityFromRotation(this.gameObj.rotation, 0, this.gameObj.body.velocity);
 
 };
 
@@ -250,12 +251,12 @@ Survive.prototype.update = function() {
 	{
 		//Handle input change here
 		//send new values to the server		
-		if (this.tank.id == myId)
+		if (this.gameObj.id == myId)
 		{
 			// send latest valid state to the server
-			this.input.x = this.tank.x;
-			this.input.y = this.tank.y;
-			this.input.angle = this.tank.angle;
+			this.input.x = this.gameObj.x;
+			this.input.y = this.gameObj.y;
+			this.input.angle = this.gameObj.angle;
 			this.input.rot = this.turret.rotation;
 			
 			
@@ -267,29 +268,29 @@ Survive.prototype.update = function() {
 	
     if (this.cursor.left)
     {
-        // this.tank.x += -2;
-        this.tank.angle = 180;
+        // this.gameObj.x += -2;
+        this.gameObj.angle = 180;
         this.currentSpeed = 300;
     }
     else if (this.cursor.right)
     {
-        // this.tank.x += 2;
-        this.tank.angle = 0;
+        // this.gameObj.x += 2;
+        this.gameObj.angle = 0;
         this.currentSpeed = 300;
 
     }	
     if (this.cursor.up)
     {
-        // this.tank.y += -2;
-        this.tank.angle = 270;
+        // this.gameObj.y += -2;
+        this.gameObj.angle = 270;
         this.currentSpeed = 300;
                
 
     }
     if (this.cursor.down)
     {
-        // this.tank.y += 2;
-        this.tank.angle = 90;
+        // this.gameObj.y += 2;
+        this.gameObj.angle = 90;
         this.currentSpeed = 300;
     }
     else
@@ -308,21 +309,21 @@ Survive.prototype.update = function() {
 	
     if (this.currentSpeed > 0)
     {
-        game.physics.arcade.velocityFromRotation(this.tank.rotation, this.currentSpeed, this.tank.body.velocity);
+        game.physics.arcade.velocityFromRotation(this.gameObj.rotation, this.currentSpeed, this.gameObj.body.velocity);
     }	
 	else
 	{
-		game.physics.arcade.velocityFromRotation(this.tank.rotation, 0, this.tank.body.velocity);
+		game.physics.arcade.velocityFromRotation(this.gameObj.rotation, 0, this.gameObj.body.velocity);
 	}	
 	
 	
 	
-    this.shadow.x = this.tank.x;
-    this.shadow.y = this.tank.y;
-    this.shadow.rotation = this.tank.rotation;
+    this.shadow.x = this.gameObj.x;
+    this.shadow.y = this.gameObj.y;
+    this.shadow.rotation = this.gameObj.rotation;
 
-    this.turret.x = this.tank.x;
-    this.turret.y = this.tank.y;
+    this.turret.x = this.gameObj.x;
+    this.turret.y = this.gameObj.y;
 };
 
 Survive.prototype.fire = function(target) {
@@ -340,7 +341,7 @@ Survive.prototype.fire = function(target) {
 
 Survive.prototype.kill = function() {
 	this.alive = false;
-	this.tank.kill();
+	this.gameObj.kill();
 	this.turret.kill();
 	this.shadow.kill();
 }
@@ -350,14 +351,15 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: p
 
 function preload () {
 
-    game.load.atlas('tank', 'assets/tanks.png', 'assets/tanks.json');
-    game.load.atlas('enemy', 'assets/enemy-tanks.png', 'assets/tanks.json');
+    //game.load.atlas('gameObj', 'assets/tanks.png', 'assets/tanks.json');
+    //game.load.atlas('enemy', 'assets/enemy-tanks.png', 'assets/tanks.json');
+    game.load.image('shadow', 'assets/shadow.png');
     game.load.image('logo', 'assets/logo.png');
     game.load.spritesheet('player', 'assets/player.png',107,70,19);
     game.load.image('zombie1', 'assets/zombie1.png');
     // game.load.image('test', 'assets/player/survivor-idle_shotgun_1.png');
     game.load.image('bullet', 'assets/bullet.png');
-    game.load.image('earth', 'assets/light_grass.png');
+    game.load.image('grass', 'assets/light_grass.png');
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
     
 }
@@ -371,17 +373,17 @@ function create () {
 	game.stage.disableVisibilityChange  = true;
 	
     //  Our tiled scrolling background
-    land = game.add.tileSprite(0, 0, 800, 600, 'earth');
+    land = game.add.tileSprite(0, 0, 800, 600, 'grass');
     land.fixedToCamera = true;
     
     playersList = {};
 	
-	player = new Survive(myId, game, tank);
+	player = new Survive(myId, game, gameObj);
 	playersList[myId] = player;
-	tank = player.tank;
+	gameObj = player.gameObj;
 	turret = player.turret;
-	tank.x=0;
-	tank.y=0;
+	gameObj.x=0;
+	gameObj.y=0;
 	bullets = player.bullets;
 	shadow = player.shadow;	
 
@@ -395,7 +397,7 @@ function create () {
         explosionAnimation.animations.add('kaboom');
     }
 
-    tank.bringToTop();
+    gameObj.bringToTop();
     turret.bringToTop();
 		
     logo = game.add.sprite(0, 200, 'logo');
@@ -403,7 +405,7 @@ function create () {
 
     game.input.onDown.add(removeLogo, this);
 
-    game.camera.follow(tank);
+    game.camera.follow(gameObj);
     game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
     game.camera.focusOnXY(0, 0);
 
@@ -438,14 +440,14 @@ function update () {
     {
 		if (!playersList[i]) continue;
 		var curBullets = playersList[i].bullets;
-		var curSurvive = playersList[i].tank;
+		var curSurvive = playersList[i].gameObj;
 		for (var j in playersList)
 		{
 			if (!playersList[j]) continue;
 			if (j!=i) 
 			{
 			
-				var targetSurvive = playersList[j].tank - 0.1;
+				var targetSurvive = playersList[j].gameObj - 0.1;
 				
 				game.physics.arcade.overlap(curBullets, targetSurvive, bulletHitPlayer, null, this);
 			
@@ -458,7 +460,7 @@ function update () {
     }
 }
 
-function bulletHitPlayer (tank, bullet) {
+function bulletHitPlayer (gameObj, bullet) {
 
     bullet.kill();
 }
