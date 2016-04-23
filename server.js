@@ -46,7 +46,7 @@ eurecaServer.exports.handshake = function()
 		{		
       var x = clients[cc].laststate ? clients[cc].laststate.x:  0;
 			var y = clients[cc].laststate ? clients[cc].laststate.y:  0;
-      remote.spawnPlayer(clients[cc].id, x, y);		
+      remote.spawnPlayer(clients[cc].id, 120, 120);		
       //console.log(clients[Object.keys(clients)[0]].id);
       //**need to be changed to random		
       remote.spawnZombie(1, x, y, clients[Object.keys(clients)[0]].id); 

@@ -22,7 +22,8 @@ var zombieID = 0;
 var playerID;
 //-------temp var for spawnZombie test-------//
 var tempZombie = 1;
-
+var targetSurvive;
+var killtest = 0;
 var eurecaClientSetup = function() {
 	var eurecaClient = new Eureca.Client();
 	eurecaClient.ready(function (proxy) {		
@@ -102,14 +103,7 @@ EnemyZombie = function (index, game, player) {
     this.health = 3;
     console.log(player);
     this.player = player;
-    this.bullets = game.add.group();
-    this.bullets.enableBody = true;
-    this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-    this.bullets.createMultiple(20, 'bullet', 0, false);
-    this.bullets.setAll('anchor.x', -1);
-    this.bullets.setAll('anchor.y', -0.5);
-    this.bullets.setAll('outOfBoundsKill', true);
-    this.bullets.setAll('checkWorldBounds', true);	
+
     this.fireRate = 1000;
     this.nextFire = 0;
     this.alive = true;
@@ -156,23 +150,17 @@ EnemyZombie.prototype.update = function() {
     this.turret.y = this.gameObj.y;
     //console.log(this.player);
     this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
-    game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
-
-    // if (this.game.physics.arcade.distanceBetween(this.gameObj, this.player) < 300)
-    // {
-        // if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0)
-        // {
-            // this.nextFire = this.game.time.now + this.fireRate;
-
-            // var bullet = this.bullets.getFirstDead();
-
-            // bullet.reset(this.turret.x, this.turret.y);
-
-            // bullet.rotation = this.game.physics.arcade.moveToObject(bullet, this.player, 500);
-        // }
-    // }
+    // game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
 
 };
+
+EnemyZombie.prototype.kill = function() {
+	this.alive = false;
+	this.gameObj.kill();
+	this.turret.kill();
+	this.shadow.kill();
+}
+
 Survive = function (index, game, player) {
 	this.cursor = {
 		left:false,
@@ -207,7 +195,7 @@ Survive = function (index, game, player) {
     //this.body.velocity.y = 0;
 	
 	this.currentSpeed =0;
-    this.fireRate = 500;
+    this.fireRate = 100;
     this.nextFire = 0;
     this.alive = true;
 
@@ -346,18 +334,15 @@ Survive.prototype.kill = function() {
 	this.shadow.kill();
 }
 
-//var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: eurecaClientSetup, update: update, render: render });
 
 function preload () {
 
-    //game.load.atlas('gameObj', 'assets/tanks.png', 'assets/tanks.json');
-    //game.load.atlas('enemy', 'assets/enemy-tanks.png', 'assets/tanks.json');
+ 
     game.load.image('shadow', 'assets/shadow.png');
     game.load.image('logo', 'assets/logo.png');
     game.load.spritesheet('player', 'assets/player.png',107,70,19);
     game.load.image('zombie1', 'assets/zombie1.png');
-    // game.load.image('test', 'assets/player/survivor-idle_shotgun_1.png');
     game.load.image('bullet', 'assets/bullet.png');
     game.load.image('grass', 'assets/light_grass.png');
     game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
@@ -369,7 +354,7 @@ function preload () {
 function create () {
 
     //  Resize our game world to be a 2000 x 2000 square
-    game.world.setBounds(-100, -100, 2000, 2000);
+    game.world.setBounds(-100, -100, 200, 200);
 	game.stage.disableVisibilityChange  = true;
 	
     //  Our tiled scrolling background
@@ -447,10 +432,12 @@ function update () {
 			if (j!=i) 
 			{
 			
-				var targetSurvive = playersList[j].gameObj - 0.1;
-				
+				targetSurvive = playersList[j].gameObj;
+        killtest = j;
+				//console.log(playersList[j].gameObj);
+        //game.physics.arcade.OVERLAP_BIAS = 5;
 				game.physics.arcade.overlap(curBullets, targetSurvive, bulletHitPlayer, null, this);
-			
+			//game.debug.geom(playersList[j].gameObj, 'rgb(0,255,0)');
 			}
 			if (playersList[j].alive)
 			{
@@ -462,8 +449,14 @@ function update () {
 
 function bulletHitPlayer (gameObj, bullet) {
 
+    console.log(targetSurvive);
     bullet.kill();
+    playersList[killtest].kill();
 }
 
-function render () {}
+function render () {
+  point = new Phaser.Point(111, 111);
+  game.debug.geom(targetSurvive, 'rgb(0,255,0)');
+  
+}
 
