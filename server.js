@@ -48,10 +48,8 @@ eurecaServer.exports.handshake = function()
 			var y = clients[cc].laststate ? clients[cc].laststate.y:  0;
       remote.spawnPlayer(clients[cc].id, x, y);		
       //console.log(clients[Object.keys(clients)[0]].id);
-      remote.spawnZombie(1, 11, 11, clients[Object.keys(clients)[0]].id); 
       //**need to be changed to random		
-      //remote.spawnZombie(2, x, y);		
-
+      remote.spawnZombie(1, x, y, clients[Object.keys(clients)[0]].id); 
 		}
 	}
 }
@@ -65,7 +63,6 @@ eurecaServer.exports.handleKeys = function (keys) {
 		var remote = clients[c].remote;
 		remote.updateState(updatedClient.id, keys);
 		
-		//keep last known state so we can send it to new connected clients
 		clients[c].laststate = keys;
 	}
 }
