@@ -54,6 +54,8 @@ var eurecaClientSetup = function() {
 		console.log('SPAWN');
 		var tnk = new Survive(i, game, tank);
 		playersList[i] = tnk;
+    console.log(playersList[i]);
+
 
 	}
   
@@ -62,8 +64,11 @@ var eurecaClientSetup = function() {
     if (zombieID == 1 || zombieID == 2){
 		console.log('SPAWN ZOMBIE');
     console.log(playerID);
-    var tnk1 = new EnemyTank(zombieID, game,tank);
+    var tnk1 = new EnemyTank(zombieID, game,playersList[playerID].tank);
     playersList[zombieID] = tnk1;
+    //console.log(tank);
+    //console.log(playersList[playerID].tank);
+
     }
     else{
       return;
@@ -83,13 +88,14 @@ var eurecaClientSetup = function() {
 	}
 }
 
-EnemyTank = function (index, game, player, bullets) {
+EnemyTank = function (index, game, player) {
 
     var x = 0;
     var y = 0;
 
     this.game = game;
     this.health = 3;
+    console.log(player);
     this.player = player;
     this.bullets = game.add.group();
     this.bullets.enableBody = true;
@@ -150,6 +156,7 @@ EnemyTank.prototype.update = function() {
 
     this.turret.x = this.tank.x;
     this.turret.y = this.tank.y;
+    //console.log(this.player);
     this.turret.rotation = this.game.physics.arcade.angleBetween(this.tank, this.player);
 
     // if (this.game.physics.arcade.distanceBetween(this.tank, this.player) < 300)
