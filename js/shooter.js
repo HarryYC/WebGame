@@ -24,11 +24,11 @@ var zombieID = 0;
 var playerID;
 //-------temp var for addZombie test-------//
 var tempZombie = 1;
-var targetSurvive;
-var killtest = 0;
-var debugObj;
+// var targetSurvive;
+// var killtest = 0;
+// var debugObj;
 // var localZombie;
-var key1;
+// var key1;
 
 var eurecaClientSetup = function() {
 	var eurecaClient = new Eureca.Client();
@@ -70,22 +70,12 @@ var eurecaClientSetup = function() {
 	}
   
   eurecaClient.exports.spawnZombie = function(zombieID, x, y, signToPlayer)
-	{
-    
+	{ 
     playerID = signToPlayer;
-    
-    if (zombieID == tempZombie++){
 		console.log('SPAWN ZOMBIE');
     console.log(playerID);
-    var tnk1 = new EnemyZombie(zombieID, game,playersList[playerID].gameObj);
+    var tnk1 = new EnemyZombie(zombieID, x, y, game,playersList[playerID].gameObj);
     zombieList[zombieID] = tnk1;
-    //console.log(gameObj);
-    //console.log(playersList[playerID].gameObj);
-
-    }
-    else{
-      return;
-    }
 	}
 	
   	eurecaClient.exports.updateState = function(id, state)
@@ -101,18 +91,18 @@ var eurecaClientSetup = function() {
 	}
 }
 
-EnemyZombie = function (index, game, player) {
+EnemyZombie = function (index, x, y, game, player) {
 
-    var x = Math.floor((Math.random() * 500) + 1);
-    var y = Math.floor((Math.random() * 500) + 1);
+    // var x = Math.floor((Math.random() * 500) + 1);
+    // var y = Math.floor((Math.random() * 500) + 1);
 
     this.game = game;
     this.health = 3;
     this.player = player;
     this.alive = true;
 
-    this.gameObj = game.add.sprite(111, 111, 'shadow');
-    this.turret = game.add.sprite(111, 111, 'zombie1');
+    this.gameObj = game.add.sprite(x, y, 'shadow');
+    this.turret = game.add.sprite(x, y, 'zombie1');
     this.gameObj.debug = true;
     this.turret.debug = true;
     // this.gameObj.width = 1;
@@ -374,9 +364,9 @@ function preload () {
 // function addZombie () {
     // console.log('1111111');
     // console.log('SPAWN ZOMBIE');
-    var tnk1 = new EnemyZombie("zzzzombie1", game,myId);
-    zombieList["zzzzombie1"] = tnk1;
-    this.eurecaClientSetup.addZombie(1, 0, 0, myId)
+    // var tnk1 = new EnemyZombie("zzzzombie1", game,myId);
+    // zombieList["zzzzombie1"] = tnk1;
+    // this.eurecaClientSetup.addZombie(1, 0, 0, myId)
 // }
 
 
@@ -444,7 +434,8 @@ function update () {
 	player.input.up = cursors.up.isDown;
   player.input.down = cursors.down.isDown;
 	player.input.fire = game.input.activePointer.leftButton.isDown;
-  player.input.addZombie = game.input.activePointer.middleButton.isDown;
+  // player.input.addZombie = game.input.activePointer.middleButton.isDown;
+  player.input.addZombie = game.input.activePointer.rightButton.isDown;
 	player.input.tx = game.input.x + game.camera.x;
 	player.input.ty = game.input.y + game.camera.y;
 	
@@ -465,7 +456,7 @@ function update () {
         if (!zombieList[j]) continue;
         // if (j!=i) 
         // {
-          targetSurvive = zombieList[j].gameObj;
+          var targetSurvive = zombieList[j].gameObj;
           //debugObj = playersList[j];
           //console.log(targetSurvive);
           //killtest = j;
@@ -506,7 +497,6 @@ function render () {
   point = new Phaser.Point(155, 410);
   floor = new Phaser.Rectangle(118, 118,64, 64);
   //game.debug.geom(point, 'rgb(0,255,0)');
-  
   //game.debug.spriteInfo(playersList[myId].turret, 32, 32);
 }
 

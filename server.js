@@ -1,17 +1,12 @@
 var express = require('express')
   , app = express(app)
   , server = require('http').createServer(app);
-  
-var zombieList;
 var zombieID = 0;
-// var count=30;
-// var counter=setInterval(timer, 10000);
+
 
 app.use(express.static(__dirname));
 
 var EurecaServer = require('eureca.io').EurecaServer;
-//var eurecaServer = new EurecaServer();
-// var eurecaServer = new EurecaServer({allow:['setId', 'spawnPlayer', 'kill']});
 var eurecaServer = new EurecaServer({allow:['setId', 'spawnPlayer','spawnZombie', 'kill', 'updateState']});
 var clients = {};
 eurecaServer.attach(server);
@@ -39,10 +34,6 @@ eurecaServer.onDisconnect(function (conn){
 	}
 });
 
-eurecaServer.updateContract(function (conn){
-  console.log('123123');
-});
-
 eurecaServer.exports.handshake = function()
 {
 	for (var c in clients)
@@ -53,9 +44,6 @@ eurecaServer.exports.handshake = function()
       var x = clients[cc].laststate ? clients[cc].laststate.x:  0;
 			var y = clients[cc].laststate ? clients[cc].laststate.y:  0;
       remote.spawnPlayer(clients[cc].id, 120, 120);		
-      //console.log(clients[Object.keys(clients)[0]].id);
-      //**need to be changed to random		
-      //remote.spawnZombie(1, x, y, clients[Object.keys(clients)[0]].id); 
 		}
 	}
 }
@@ -63,16 +51,21 @@ eurecaServer.exports.handshake = function()
 eurecaServer.exports.handleKeys = function (keys) {
 	var conn = this.connection;
 	var updatedClient = clients[conn.id];
+  //spawn zombie randomly at position x,y
+  var x = Math.floor((Math.random() * 500) + 1);
+  var y = Math.floor((Math.random() * 500) + 1);
+  //set zombies target to random player
+  var randomPlayer = Math.floor(Math.random() * Object.keys(clients).length);
 
+  //console.log(randomPlayer);
 	for (var c in clients)
 	{
 	var remote = clients[c].remote;
   if (keys.addZombie == true){
-    console.log(clients[Object.keys(clients)[0]].id);
-    remote.spawnZombie(1, 222, 222, clients[Object.keys(clients)[0]].id)
+    
+    remote.spawnZombie(zombieID++, x, y, clients[Object.keys(clients)[randomPlayer]].id);
   }
 		remote.updateState(updatedClient.id, keys);
-		
 		clients[c].laststate = keys;
 	}
 }
