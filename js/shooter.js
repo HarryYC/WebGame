@@ -59,7 +59,7 @@ var eurecaClientSetup = function() {
 	eurecaClient.exports.spawnPlayer = function(i, x, y)
 	{
 		
-		if (i == myId) return; //this is me
+		if (i == myId || ( i in playersList)) return; //this is me or other exsists player
 		
 		console.log('SPAWN');
 		var tnk = new Survive(i, game, gameObj);
