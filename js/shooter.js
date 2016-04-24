@@ -343,7 +343,7 @@ Survive.prototype.kill = function() {
 	this.turret.kill();
 }
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'shooting-game', { preload: preload, create: eurecaClientSetup, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'shooting-game', { preload: preload, create: eurecaClientSetup, update: update, render: render });
 
 function preload () {
 
@@ -406,23 +406,22 @@ function create () {
     gameObj.bringToTop();
     turret.bringToTop();
 		
-    logo = game.add.sprite(0, 200, 'logo');
+    logo = game.add.sprite(0, 100, 'logo');
     logo.fixedToCamera = true;
 
-    game.input.onDown.add(removeLogo, this);
+    //game.input.onDown.add(removeLogo, this);
 
     game.camera.follow(gameObj);
     game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
     game.camera.focusOnXY(0, 0);
 
     cursors = game.input.keyboard.createCursorKeys();
-	
-	setTimeout(removeLogo, 1000);
+    setTimeout(removeLogo, 5000);
 	
 }
 
 function removeLogo () {
-    game.input.onDown.remove(removeLogo, this);
+    //game.input.onDown.remove(removeLogo, this);
     logo.kill();
 }
 
@@ -434,8 +433,8 @@ function update () {
 	player.input.up = cursors.up.isDown;
   player.input.down = cursors.down.isDown;
 	player.input.fire = game.input.activePointer.leftButton.isDown;
-  // player.input.addZombie = game.input.activePointer.middleButton.isDown;
-  player.input.addZombie = game.input.activePointer.rightButton.isDown;
+  player.input.addZombie = game.input.activePointer.middleButton.isDown;
+  // player.input.addZombie = game.input.activePointer.rightButton.isDown;
 	player.input.tx = game.input.x + game.camera.x;
 	player.input.ty = game.input.y + game.camera.y;
 	
@@ -483,13 +482,18 @@ function bulletHitPlayer (gameObj, bullet) {
     //game.debug.bodyInfo(debugObj, 32, 32);
     //game.debug.geom(targetSurvive, 'rgb(0,255,0)');
 
-    console.log(game,Object.keys(playersList)[0].toString());
     bullet.kill();
-    zombieList[gameObj.id].kill();
+    console.log(zombieList[gameObj.id].health);
+    if (zombieList[gameObj.id].health > 0){
+      zombieList[gameObj.id].health--;
+    }else
+    {
+       zombieList[gameObj.id].kill();
+    }
+    // zombieList[gameObj.id].kill();
     var explosionAnimation = explosions.getFirstExists(false);
     explosionAnimation.reset(gameObj.x, gameObj.y);
     explosionAnimation.play('kaboom', 30, false, true);
-    console.log(Object.keys(playersList));
 
 }
 
@@ -497,6 +501,8 @@ function render () {
   point = new Phaser.Point(155, 410);
   floor = new Phaser.Rectangle(118, 118,64, 64);
   //game.debug.geom(point, 'rgb(0,255,0)');
-  //game.debug.spriteInfo(playersList[myId].turret, 32, 32);
+  // if (!ready) return;
+  // game.debug.spriteInfo(playersList[myId].gameObj, 32, 32);
+  // this.game.debug.quadTree(this.game.physics.arcade.quadTree);
 }
 
