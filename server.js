@@ -63,10 +63,14 @@ eurecaServer.exports.handshake = function()
 eurecaServer.exports.handleKeys = function (keys) {
 	var conn = this.connection;
 	var updatedClient = clients[conn.id];
-	
+
 	for (var c in clients)
 	{
-		var remote = clients[c].remote;
+	var remote = clients[c].remote;
+  if (keys.addZombie == true){
+    console.log(clients[Object.keys(clients)[0]].id);
+    remote.spawnZombie(1, 222, 222, clients[Object.keys(clients)[0]].id)
+  }
 		remote.updateState(updatedClient.id, keys);
 		
 		clients[c].laststate = keys;
