@@ -24,6 +24,9 @@ var playerID;
 var tempZombie = 1;
 var targetSurvive;
 var killtest = 0;
+var debugObj;
+
+
 var eurecaClientSetup = function() {
 	var eurecaClient = new Eureca.Client();
 	eurecaClient.ready(function (proxy) {		
@@ -101,24 +104,26 @@ EnemyZombie = function (index, game, player) {
 
     this.game = game;
     this.health = 3;
-    console.log(player);
     this.player = player;
-
-    this.fireRate = 1000;
-    this.nextFire = 0;
     this.alive = true;
 
-    this.shadow = game.add.sprite(150, 150, 'shadow');
-    this.gameObj = game.add.sprite(150, 150, '');
+    this.gameObj = game.add.sprite(150, 150, 'shadow');
     this.turret = game.add.sprite(150, 150, 'zombie1');
-
-    this.shadow.anchor.set(0.5);
+    this.gameObj.debug = true;
+    this.turret.debug = true;
+    // this.gameObj.width = 1;
+    // this.gameObj.height = 1;
+    // this.turret.width = 1;
+    // this.turret.height = 1;
+    game.physics.enable(this.gameObj, Phaser.Physics.ARCADE); 
+    this.gameObj.body.immovable = false;
+    this.gameObj.body.collideWorldBounds = true;
+    this.gameObj.body.bounce.setTo(0, 0);
     this.gameObj.anchor.set(0.5);
     this.turret.anchor.set(0.3, 0.5);
-
+    this.gameObj.id = index;
     this.gameObj.name = index.toString();
-    game.physics.enable(this.gameObj, Phaser.Physics.ARCADE);
-    
+
 };
 
 EnemyZombie.prototype.damage = function() {
@@ -128,11 +133,8 @@ EnemyZombie.prototype.damage = function() {
     if (this.health <= 0)
     {
         this.alive = false;
-
-        this.shadow.kill();
         this.gameObj.kill();
         this.turret.kill();
-
         return true;
     }
 
@@ -142,15 +144,12 @@ EnemyZombie.prototype.damage = function() {
 
 EnemyZombie.prototype.update = function() {
 
-    this.shadow.x = this.gameObj.x;
-    this.shadow.y = this.gameObj.y;
-    this.shadow.rotation = this.gameObj.rotation;
-
     this.turret.x = this.gameObj.x;
     this.turret.y = this.gameObj.y;
-    //console.log(this.player);
     this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
-    // game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
+    this.gameObj.rotation = this.turret.rotation;
+    game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
+    // game.physics.arcade.moveToObject(this.gameObj,this.player);
 
 };
 
@@ -158,7 +157,6 @@ EnemyZombie.prototype.kill = function() {
 	this.alive = false;
 	this.gameObj.kill();
 	this.turret.kill();
-	this.shadow.kill();
 }
 
 Survive = function (index, game, player) {
@@ -192,20 +190,19 @@ Survive = function (index, game, player) {
     this.bullets.setAll('anchor.y', -0.5);
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('checkWorldBounds', true);	
-    //this.body.velocity.y = 0;
 	
-	this.currentSpeed =0;
+    this.currentSpeed =0;
     this.fireRate = 100;
     this.nextFire = 0;
     this.alive = true;
 
-    this.shadow = game.add.sprite(x, y, 'shadow');
-    this.gameObj = game.add.sprite(x, y, '');
+    //this.shadow = game.add.sprite(x, y, 'shadow');
+    this.gameObj = game.add.sprite(x, y, 'shadow');
     this.turret = game.add.sprite(x, y, 'player');
     this.breath = this.turret.animations.add('breath');
     this.turret.animations.play('breath',5,true);
 
-    this.shadow.anchor.set(0.5);
+    //this.shadow.anchor.set(0.5);
     this.gameObj.anchor.set(0.5);
     this.turret.anchor.set(0.3, 0.5);
 
@@ -303,12 +300,6 @@ Survive.prototype.update = function() {
 	{
 		game.physics.arcade.velocityFromRotation(this.gameObj.rotation, 0, this.gameObj.body.velocity);
 	}	
-	
-	
-	
-    this.shadow.x = this.gameObj.x;
-    this.shadow.y = this.gameObj.y;
-    this.shadow.rotation = this.gameObj.rotation;
 
     this.turret.x = this.gameObj.x;
     this.turret.y = this.gameObj.y;
@@ -331,18 +322,18 @@ Survive.prototype.kill = function() {
 	this.alive = false;
 	this.gameObj.kill();
 	this.turret.kill();
-	this.shadow.kill();
 }
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: eurecaClientSetup, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'shooting-game', { preload: preload, create: eurecaClientSetup, update: update, render: render });
 
 function preload () {
 
  
     game.load.image('shadow', 'assets/shadow.png');
+    game.load.atlas('enemy', 'assets/enemy-tanks.png', 'assets/tanks.json');
     game.load.image('logo', 'assets/logo.png');
     game.load.spritesheet('player', 'assets/player.png',107,70,19);
-    game.load.image('zombie1', 'assets/zombie1.png');
+    game.load.image('zombie1', 'assets/zombie1.png',71,71);
     game.load.image('bullet', 'assets/bullet.png');
     game.load.image('grass', 'assets/light_grass.png');
     //game.load.spritesheet('kaboom1', 'assets/explosion.png', 64, 64, 23);
@@ -434,7 +425,9 @@ function update () {
 			{
 			
 				targetSurvive = playersList[j].gameObj;
-        killtest = j;
+        //debugObj = playersList[j];
+        //console.log(targetSurvive);
+        //killtest = j;
 				//console.log(playersList[j].gameObj);
         //game.physics.arcade.OVERLAP_BIAS = 5;
 				game.physics.arcade.overlap(curBullets, targetSurvive, bulletHitPlayer, null, this);
@@ -450,17 +443,24 @@ function update () {
 
 function bulletHitPlayer (gameObj, bullet) {
 
-    console.log(targetSurvive);
+    console.log(gameObj);
+    //game.debug.bodyInfo(debugObj, 32, 32);
+    //game.debug.geom(targetSurvive, 'rgb(0,255,0)');
+
+
     bullet.kill();
-    playersList[killtest].kill();
+    //playersList[killtest].kill();
     var explosionAnimation = explosions.getFirstExists(false);
-    explosionAnimation.reset(111, 111);
+    explosionAnimation.reset(gameObj.x, gameObj.y);
     explosionAnimation.play('kaboom', 30, false, true);
 }
 
 function render () {
-  point = new Phaser.Point(111, 111);
-  game.debug.geom(targetSurvive, 'rgb(0,255,0)');
+  point = new Phaser.Point(155, 410);
+  floor = new Phaser.Rectangle(118, 118,64, 64);
+  //game.debug.geom(point, 'rgb(0,255,0)');
   
+  
+  //game.debug.spriteInfo(playersList[myId].turret, 32, 32);
 }
 
