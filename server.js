@@ -4,6 +4,8 @@ var express = require('express')
   
 var zombieList;
 var zombieID = 0;
+// var count=30;
+// var counter=setInterval(timer, 10000);
 
 app.use(express.static(__dirname));
 
@@ -37,6 +39,10 @@ eurecaServer.onDisconnect(function (conn){
 	}
 });
 
+eurecaServer.updateContract(function (conn){
+  console.log('123123');
+});
+
 eurecaServer.exports.handshake = function()
 {
 	for (var c in clients)
@@ -49,7 +55,7 @@ eurecaServer.exports.handshake = function()
       remote.spawnPlayer(clients[cc].id, 120, 120);		
       //console.log(clients[Object.keys(clients)[0]].id);
       //**need to be changed to random		
-      remote.spawnZombie(1, x, y, clients[Object.keys(clients)[0]].id); 
+      //remote.spawnZombie(1, x, y, clients[Object.keys(clients)[0]].id); 
 		}
 	}
 }

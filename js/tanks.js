@@ -1,3 +1,5 @@
+
+
 var myId=0;
 var land;
 var shadow;
@@ -25,7 +27,8 @@ var tempZombie = 1;
 var targetSurvive;
 var killtest = 0;
 var debugObj;
-
+var localZombie;
+var key1;
 
 var eurecaClientSetup = function() {
 	var eurecaClient = new Eureca.Client();
@@ -165,7 +168,8 @@ Survive = function (index, game, player) {
 		right:false,
 		up:false,
     down:false,
-		fire:false		
+		fire:false,
+    spawnZombie:false
 	}
 
 	this.input = {
@@ -173,7 +177,8 @@ Survive = function (index, game, player) {
 		right:false,
 		up:false,
     down:false,
-		fire:false
+		fire:false,
+    spawnZombie:false
 	}
 
     var x = 0;
@@ -190,7 +195,12 @@ Survive = function (index, game, player) {
     this.bullets.setAll('anchor.y', -0.5);
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('checkWorldBounds', true);	
-	
+    
+    this.localZombie = game.add.group();
+	  this.localZombie.createMultiple(20, 'zombie1', 0, false);
+    this.localZombie.setAll('outOfBoundsKill', true);
+    this.localZombie.setAll('checkWorldBounds', true);
+    
     this.currentSpeed =0;
     this.fireRate = 100;
     this.nextFire = 0;
@@ -228,7 +238,8 @@ Survive.prototype.update = function() {
 		this.cursor.right != this.input.right ||
 		this.cursor.up != this.input.up ||
     this.cursor.down != this.input.down ||
-		this.cursor.fire != this.input.fire
+		this.cursor.fire != this.input.fire ||
+    this.cursor.spawnZombie != this.input.spawnZombie
 	);
 	
 	
@@ -290,7 +301,10 @@ Survive.prototype.update = function() {
 		this.fire({x:this.cursor.tx, y:this.cursor.ty});
     }
 	
-	
+	  if (this.cursor.spawnZombie)
+    {	
+		this.spawnZombie({x:this.cursor.tx, y:this.cursor.ty});
+    }
 	
     if (this.currentSpeed > 0)
     {
@@ -305,6 +319,16 @@ Survive.prototype.update = function() {
     this.turret.y = this.gameObj.y;
 };
 
+Survive.prototype.spawnZombie = function(target) {
+  console.log(target.x);
+  console.log(target.y);
+  
+    console.log('1111111');
+    console.log('SPAWN ZOMBIE');
+    // var tnk1 = new EnemyZombie("1", game,myId);
+    // playersList[1] = tnk1;
+}
+
 Survive.prototype.fire = function(target) {
 		if (!this.alive) return;
         if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0)
@@ -316,8 +340,6 @@ Survive.prototype.fire = function(target) {
 			bullet.rotation = this.game.physics.arcade.moveToObject(bullet, target, 500);
         }
 }
-
-
 Survive.prototype.kill = function() {
 	this.alive = false;
 	this.gameObj.kill();
@@ -338,15 +360,24 @@ function preload () {
     game.load.image('grass', 'assets/light_grass.png');
     //game.load.spritesheet('kaboom1', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('kaboom', 'assets/blood.png', 150, 150, 6);
+    key1 = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
+    key1.onDown.add(addZombie, this);
     
 }
 
+function addZombie () {
+    console.log('1111111');
+    console.log('SPAWN ZOMBIE');
+    //var tnk1 = new EnemyZombie("1", game,myId);
+    //playersList[1] = tnk1;
+    this.eurecaClientSetup.spawnZombie(1, 0, 0, myId)
+}
 
 
 function create () {
 
     //  Resize our game world to be a 2000 x 2000 square
-    game.world.setBounds(-100, -100, 200, 200);
+    game.world.setBounds(-100, -100, 2000, 2000);
 	game.stage.disableVisibilityChange  = true;
 	
     //  Our tiled scrolling background
@@ -362,6 +393,7 @@ function create () {
 	gameObj.x=0;
 	gameObj.y=0;
 	bullets = player.bullets;
+  localZombie = player.localZombie;
 	shadow = player.shadow;	
 
     //  Explosion pool
@@ -403,7 +435,8 @@ function update () {
 	player.input.right = cursors.right.isDown;
 	player.input.up = cursors.up.isDown;
   player.input.down = cursors.down.isDown;
-	player.input.fire = game.input.activePointer.isDown;
+	player.input.fire = game.input.activePointer.leftButton.isDown;
+  player.input.spawnZombie = game.input.activePointer.rightButton.isDown;
 	player.input.tx = game.input.x + game.camera.x;
 	player.input.ty = game.input.y + game.camera.y;
 	
@@ -415,8 +448,10 @@ function update () {
 
     for (var i in playersList)
     {
+    {
 		if (!playersList[i]) continue;
 		var curBullets = playersList[i].bullets;
+    var curZombie = playersList[i].localZombie;
 		var curSurvive = playersList[i].gameObj;
 		for (var j in playersList)
 		{
@@ -439,7 +474,7 @@ function update () {
 			}			
 		}
     }
-}
+}}
 
 function bulletHitPlayer (gameObj, bullet) {
 
