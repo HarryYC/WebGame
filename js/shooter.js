@@ -8,9 +8,6 @@ var turret;
 var breath;
 var player;
 var playersList;
-var enemyBullets;
-var enemiesTotal = 0;
-var enemiesAlive = 0;
 var explosions;
 var logo;
 var cursors;
@@ -28,7 +25,7 @@ var tempZombie = 1;
 // var killtest = 0;
 // var debugObj;
 // var localZombie;
-// var key1;
+var key1;
 
 var eurecaClientSetup = function() {
 	var eurecaClient = new Eureca.Client();
@@ -356,18 +353,19 @@ function preload () {
     game.load.image('grass', 'assets/light_grass.png');
     //game.load.spritesheet('kaboom1', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('kaboom', 'assets/blood.png', 150, 150, 6);
-    // key1 = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
-    // key1.onDown.add(addZombie, this);
+    key1 = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
+    key1.onDown.add(addZombie, this);
     
 }
 
-// function addZombie () {
+function addZombie () {
     // console.log('1111111');
     // console.log('SPAWN ZOMBIE');
     // var tnk1 = new EnemyZombie("zzzzombie1", game,myId);
     // zombieList["zzzzombie1"] = tnk1;
     // this.eurecaClientSetup.addZombie(1, 0, 0, myId)
-// }
+      eurecaServer.test();
+}
 
 
 function create () {
@@ -437,7 +435,6 @@ function update () {
   // player.input.addZombie = game.input.activePointer.rightButton.isDown;
 	player.input.tx = game.input.x + game.camera.x;
 	player.input.ty = game.input.y + game.camera.y;
-	
 	
 	
 	turret.rotation = game.physics.arcade.angleToPointer(turret);	

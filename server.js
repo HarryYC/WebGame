@@ -1,8 +1,12 @@
 var express = require('express')
   , app = express(app)
   , server = require('http').createServer(app);
+
 var zombieID = 0;
-gamestart = false;
+var gamestart = false;
+var x = [];
+var y = [];
+var randomPlayer = [];
 
 app.use(express.static(__dirname));
 
@@ -34,6 +38,7 @@ eurecaServer.onDisconnect(function (conn){
 	}
 });
 
+
 eurecaServer.exports.handshake = function()
 {
 	for (var c in clients)
@@ -48,24 +53,28 @@ eurecaServer.exports.handshake = function()
 	}
 }
 
+eurecaServer.exports.test = function()
+{
+  console.log("call zombies from clients");
+  initZombie();
+  	for (var c in clients)
+	{
+		var remote = clients[c].remote;
+		for (var cc in clients)
+		{		
+      remote.spawnZombie(zombieID++, x[0], y[0], 
+                      clients[Object.keys(clients)[randomPlayer[0]]].id);		
+		}
+	}
+}
+ 
+
+
 eurecaServer.exports.handleKeys = function (keys) {
 	var conn = this.connection;
 	var updatedClient = clients[conn.id];
-  var x = [];
-  var y = [];
-  var randomPlayer = [];
-  for (var i = 0; i < 5; i++)
-  {
-    x.push(0);
-    y.push(Math.floor((Math.random() * 600) + 1));
-    randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
-  }
-    for (var i = 0; i < 5; i++)
-  {
-    x.push(Math.floor((Math.random() * 800) + 1));
-    y.push(0);
-    randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
-  }
+
+  
 	for (var c in clients)
 	{
 	var remote = clients[c].remote;
@@ -73,6 +82,7 @@ eurecaServer.exports.handleKeys = function (keys) {
   //console.log(Object.keys(clients).length);
   if (gamestart == false && Object.keys(clients).length > 1)
   {
+    initZombie();
     for (var i = 0; i < 10; i++)
     {
       remote.spawnZombie(zombieID++, x[i], y[i], 
@@ -91,4 +101,21 @@ eurecaServer.exports.handleKeys = function (keys) {
   }
 }
 
+function initZombie (){
+  x = [];
+  y = [];
+  for (var i = 0; i < 5; i++)
+    {
+      x.push(0);
+      y.push(Math.floor((Math.random() * 600) + 1));
+      randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
+    }
+  for (var i = 0; i < 5; i++)
+    {
+      x.push(Math.floor((Math.random() * 800) + 1));
+      y.push(0);
+      randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
+    }
+  
+}
 server.listen(8000);
