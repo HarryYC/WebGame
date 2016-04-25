@@ -178,7 +178,7 @@ Survive = function (index, game, player) {
     var y = 0;
 
     this.game = game;
-    this.health = 30;
+    this.health = 100;
     this.player = player;
     this.bullets = game.add.group();
     this.bullets.enableBody = true;
@@ -501,8 +501,15 @@ function render () {
   point = new Phaser.Point(155, 410);
   floor = new Phaser.Rectangle(118, 118,64, 64);
   //game.debug.geom(point, 'rgb(0,255,0)');
-  // if (!ready) return;
-  // game.debug.spriteInfo(playersList[myId].gameObj, 32, 32);
-  // this.game.debug.quadTree(this.game.physics.arcade.quadTree);
+  if (!ready) return;
+  //game.debug.spriteBounds(playersList[myId].gameObj, 'rgb(0,255,0)',true);
+      for (var i in playersList)
+      {
+      game.debug.text('HP: ' + playersList[i].health + '/100', playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
+      }
+      for (var j in zombieList)
+      {
+      game.debug.spriteBounds(zombieList[j].gameObj,'rgb(0,255,0)',true);
+      }
 }
 

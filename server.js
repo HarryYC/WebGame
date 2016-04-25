@@ -59,10 +59,16 @@ eurecaServer.exports.handleKeys = function (keys) {
   var x = [];
   var y = [];
   var randomPlayer = [];
-  for (var i = 0; i < 10; i++)
+  for (var i = 0; i < 5; i++)
   {
-    x.push(Math.floor((Math.random() * 500) + 1));
-    y.push(Math.floor((Math.random() * 500) + 1));
+    x.push(0);
+    y.push(Math.floor((Math.random() * 600) + 1));
+    randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
+  }
+    for (var i = 0; i < 5; i++)
+  {
+    x.push(Math.floor((Math.random() * 800) + 1));
+    y.push(0);
     randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
   }
 
