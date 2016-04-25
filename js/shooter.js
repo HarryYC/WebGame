@@ -507,9 +507,9 @@ function render () {
       {
       game.debug.text('HP: ' + playersList[i].health + '/100', playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
       }
-//      for (var j in zombieList)
-//      {
-//      game.debug.spriteBounds(zombieList[j].gameObj,'rgb(0,255,0)',true);
-//      }
+      // for (var j in zombieList)
+      // {
+      // game.debug.spriteBounds(zombieList[j].gameObj,'rgb(0,255,0)',true);
+      // }
 }
 
