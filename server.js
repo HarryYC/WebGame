@@ -62,9 +62,10 @@ eurecaServer.exports.begin = function()
 		var remote = clients[c].remote;
 		//for (var cc in clients)
 		//{
-	    console.log(c);
-      remote.spawnZombie(zombieID++, x[0], y[0], 
-                      clients[Object.keys(clients)[randomPlayer[0]]].id);		
+		for (var i = 0; i < 10; i++){
+      remote.spawnZombie(zombieID++, x[i], y[i], 
+                      clients[Object.keys(clients)[randomPlayer[i]]].id);		
+		}
 		//}
 	}
 }
