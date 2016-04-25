@@ -17,6 +17,7 @@ var nextFire = 0;
 var ready = false;
 var eurecaServer;
 var zombieList;
+var gameStart = false;
 var zombieID = 0;
 var playerID;
 //-------temp var for addZombie test-------//
@@ -354,17 +355,17 @@ function preload () {
     //game.load.spritesheet('kaboom1', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('kaboom', 'assets/blood.png', 150, 150, 6);
     key1 = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
-    key1.onDown.add(addZombie, this);
+    key1.onDown.add(startGame, this);
     
 }
 
-function addZombie () {
+function startGame () {
     // console.log('1111111');
     // console.log('SPAWN ZOMBIE');
     // var tnk1 = new EnemyZombie("zzzzombie1", game,myId);
     // zombieList["zzzzombie1"] = tnk1;
     // this.eurecaClientSetup.addZombie(1, 0, 0, myId)
-      eurecaServer.test();
+      eurecaServer.begin();
 }
 
 
@@ -414,7 +415,7 @@ function create () {
     game.camera.focusOnXY(0, 0);
 
     cursors = game.input.keyboard.createCursorKeys();
-    setTimeout(removeLogo, 5000);
+    //setTimeout(removeLogo, 5000);
 	
 }
 
@@ -425,6 +426,12 @@ function removeLogo () {
 
 function update () {
 	if (!ready) return;
+	if (Object.keys(zombieList).length > 0){
+	    gameStart = true;
+	}
+	if (gameStart){
+	    removeLogo();
+	}
   //console.log(myId + zombieID++);
 	player.input.left = cursors.left.isDown;
 	player.input.right = cursors.right.isDown;
@@ -503,8 +510,8 @@ function render () {
       for (var i in playersList)
       {
       game.debug.text('HP: ' + playersList[i].health + '/100', playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
-      game.debug.text(playersList[i].gameObj.x,32,32)
-      game.debug.text(playersList[i].gameObj.y,82,32)
+      //game.debug.text(playersList[i].gameObj.x,32,32)
+      //game.debug.text(playersList[i].gameObj.y,82,32)
 
       }
       // for (var j in zombieList)

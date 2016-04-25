@@ -53,18 +53,19 @@ eurecaServer.exports.handshake = function()
 	}
 }
 
-eurecaServer.exports.test = function()
+eurecaServer.exports.begin = function()
 {
   console.log("call zombies from clients");
   initZombie();
   	for (var c in clients)
 	{
 		var remote = clients[c].remote;
-		for (var cc in clients)
-		{		
+		//for (var cc in clients)
+		//{
+	    console.log(c);
       remote.spawnZombie(zombieID++, x[0], y[0], 
                       clients[Object.keys(clients)[randomPlayer[0]]].id);		
-		}
+		//}
 	}
 }
  
@@ -80,15 +81,16 @@ eurecaServer.exports.handleKeys = function (keys) {
 	var remote = clients[c].remote;
   //console.log(gamestart);
   //console.log(Object.keys(clients).length);
-  if (gamestart == false && Object.keys(clients).length > 1)
-  {
-    initZombie();
-    for (var i = 0; i < 10; i++)
-    {
-      remote.spawnZombie(zombieID++, x[i], y[i], 
-                         clients[Object.keys(clients)[randomPlayer[i]]].id);
-    }
-  }
+	//start when player > 2
+//  if (gamestart == false && Object.keys(clients).length > 1)
+//  {
+//    initZombie();
+//    for (var i = 0; i < 10; i++)
+//    {
+//      remote.spawnZombie(zombieID++, x[i], y[i], 
+//                         clients[Object.keys(clients)[randomPlayer[i]]].id);
+//    }
+//  }
   if (keys.addZombie == true){
     remote.spawnZombie(zombieID++, x[0], y[0], 
                        clients[Object.keys(clients)[randomPlayer[0]]].id);
