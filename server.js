@@ -104,18 +104,20 @@ eurecaServer.exports.handleKeys = function (keys) {
 function initZombie (){
   x = [];
   y = [];
-  for (var i = 0; i < 5; i++)
+  randomPlayer = [];
+    for (var i = 0; i < 5; i++)
     {
-      x.push(0);
-      y.push(Math.floor((Math.random() * 600) + 1));
+      x.push(Math.floor((Math.random() * 660) + 1));
+      y.push(400);
       randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
     }
   for (var i = 0; i < 5; i++)
     {
-      x.push(Math.floor((Math.random() * 800) + 1));
-      y.push(0);
+      x.push(-60);
+      y.push(Math.floor((Math.random() * 460) + 1));
       randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
     }
+
   
 }
 server.listen(8000);

@@ -503,6 +503,9 @@ function render () {
       for (var i in playersList)
       {
       game.debug.text('HP: ' + playersList[i].health + '/100', playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
+      game.debug.text(playersList[i].gameObj.x,32,32)
+      game.debug.text(playersList[i].gameObj.y,82,32)
+
       }
       // for (var j in zombieList)
       // {
