@@ -50,7 +50,7 @@ var eurecaClientSetup = function() {
 	{	
 		if (playersList[id]) {
 			playersList[id].kill();
-			console.log('killing ', id, playersList[id]);
+		//	console.log('killing ', id, playersList[id]);
 		}
 	}	
 	
@@ -59,10 +59,10 @@ var eurecaClientSetup = function() {
 		
 		if (i == myId || ( i in playersList)) return; //this is me or other exsists player
 		
-		console.log('SPAWN');
+		//console.log('SPAWN');
 		var tnk = new Survive(i, game, gameObj);
 		playersList[i] = tnk;
-    console.log(playersList[i]);
+    //console.log(playersList[i]);
 
 
 	}
@@ -70,8 +70,8 @@ var eurecaClientSetup = function() {
   eurecaClient.exports.spawnZombie = function(zombieID, x, y, signToPlayer)
 	{ 
     playerID = signToPlayer;
-		console.log('SPAWN ZOMBIE');
-    console.log(playerID);
+//		console.log('SPAWN ZOMBIE');
+//    console.log(playerID);
     var tnk1 = new EnemyZombie(zombieID, x, y, game,playersList[playerID].gameObj);
     zombieList[zombieID] = tnk1;
 	}
@@ -365,6 +365,7 @@ function startGame () {
     // var tnk1 = new EnemyZombie("zzzzombie1", game,myId);
     // zombieList["zzzzombie1"] = tnk1;
     // this.eurecaClientSetup.addZombie(1, 0, 0, myId)
+    if (gameStart == true) return;
       eurecaServer.begin();
 }
 
@@ -405,9 +406,9 @@ function create () {
     gameObj.bringToTop();
     turret.bringToTop();
 		
-    logo = game.add.sprite(0, 100, 'logo');
-    logo.fixedToCamera = true;
-
+    //logo = game.add.sprite(0, 100, 'logo');
+    //logo.fixedToCamera = true;
+    addLogo();
     //game.input.onDown.add(removeLogo, this);
 
     game.camera.follow(gameObj);
@@ -418,7 +419,10 @@ function create () {
     //setTimeout(removeLogo, 5000);
 	
 }
-
+function addLogo() {
+    logo = game.add.sprite(0, 100, 'logo');
+    logo.fixedToCamera = true;
+}
 function removeLogo () {
     //game.input.onDown.remove(removeLogo, this);
     logo.kill();
@@ -426,11 +430,15 @@ function removeLogo () {
 
 function update () {
 	if (!ready) return;
+	//master client press 1, gamestart
 	if (Object.keys(zombieList).length > 0){
 	    gameStart = true;
-	}
-	if (gameStart){
 	    removeLogo();
+	}
+	//console.log(Object.keys(zombieList).length);
+	if (Object.keys(zombieList).length == 0 && gameStart == true){
+	    gameStart = false;
+	    addLogo();
 	}
   //console.log(myId + zombieID++);
 	player.input.left = cursors.left.isDown;
@@ -468,10 +476,13 @@ function update () {
           game.physics.arcade.overlap(curBullets, targetSurvive, bulletHitPlayer, null, this);
         //game.debug.geom(playersList[j].gameObj, 'rgb(0,255,0)');
         // }
+	if (j in zombieList)
+	{
         if (zombieList[j].alive)
         {
           zombieList[j].update();
-        }			
+        }
+	  }
       }
       if (playersList[i].alive)
       {
@@ -487,12 +498,13 @@ function bulletHitPlayer (gameObj, bullet) {
     //game.debug.geom(targetSurvive, 'rgb(0,255,0)');
 
     bullet.kill();
-    console.log(zombieList[gameObj.id].health);
+   // console.log(zombieList[gameObj.id].health);
     if (zombieList[gameObj.id].health > 0){
       zombieList[gameObj.id].health--;
     }else
     {
        zombieList[gameObj.id].kill();
+       delete zombieList[gameObj.id];
     }
     // zombieList[gameObj.id].kill();
     var explosionAnimation = explosions.getFirstExists(false);
