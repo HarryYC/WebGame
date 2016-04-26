@@ -209,7 +209,7 @@ Survive = function (index, game, player) {
 
     this.gameObj.id = index;
     game.physics.enable(this.gameObj, Phaser.Physics.ARCADE);
-    this.gameObj.body.immovable = false;
+    this.gameObj.body.immovable = true;
     this.gameObj.body.collideWorldBounds = true;
     this.gameObj.body.bounce.setTo(0, 0);
 	  this.gameObj.body.velocity.x = 0;
@@ -473,21 +473,29 @@ function update () {
           //killtest = j;
           //console.log(playersList[j].gameObj);
           //game.physics.arcade.OVERLAP_BIAS = 5;
+          game.physics.arcade.collide(curSurvive, targetSurvive);
           game.physics.arcade.overlap(curBullets, targetSurvive, bulletHitPlayer, null, this);
         //game.debug.geom(playersList[j].gameObj, 'rgb(0,255,0)');
         // }
+
 	if (j in zombieList)
 	{
         if (zombieList[j].alive)
         {
           zombieList[j].update();
+                       for (var k in zombieList)
+      {
+        game.physics.arcade.collide(zombieList[j].gameObj, zombieList[k].gameObj);
+      }
         }
 	  }
+
       }
       if (playersList[i].alive)
       {
         playersList[i].update();
-      }		
+      }
+         // game.physics.arcade.collide(this.zombieList, this.zombieList);      
     }
 }
 
@@ -514,21 +522,26 @@ function bulletHitPlayer (gameObj, bullet) {
 }
 
 function render () {
-  point = new Phaser.Point(155, 410);
-  floor = new Phaser.Rectangle(118, 118,64, 64);
   //game.debug.geom(point, 'rgb(0,255,0)');
   if (!ready) return;
+      game.debug.quadTree(game.physics.arcade.quadTree);
   //game.debug.spriteBounds(playersList[myId].gameObj, 'rgb(0,255,0)',true);
       for (var i in playersList)
       {
-      game.debug.text('HP: ' + playersList[i].health + '/100', playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
-      //game.debug.text(playersList[i].gameObj.x,32,32)
-      //game.debug.text(playersList[i].gameObj.y,82,32)
-
+      // game.debug.text('HP: ' + playersList[i].health + '/100', playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
+      game.debug.text(playersList[i].gameObj.x,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
+      game.debug.text(playersList[i].gameObj.y,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 50);
+      
+       game.debug.spriteBounds(playersList[i].bullets);
+      
       }
-      // for (var j in zombieList)
-      // {
+      for (var j in zombieList)
+      {
+      game.debug.body(zombieList[j]);
+      game.debug.bodyInfo(zombieList[j]);
+      game.debug.spriteInfo(zombieList[j].gameObj,32,32);
+      game.debug.spriteBounds(zombieList[j].gameObj);
       // game.debug.spriteBounds(zombieList[j].gameObj,'rgb(0,255,0)',true);
-      // }
+      }
 }
 
