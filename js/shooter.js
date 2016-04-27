@@ -20,9 +20,8 @@ var zombieList;
 var gameStart = false;
 var zombieID = 0;
 var playerID;
-var atk = false;
 //-------temp var for addZombie test-------//
-var tempZombie = 1;
+// var tempZombie = 1;
 // var targetSurvive;
 // var killtest = 0;
 // var debugObj;
@@ -104,15 +103,10 @@ EnemyZombie = function (index, x, y, game, player) {
     this.turret = game.add.sprite(x, y, 'zombie');
     this.attack = this.turret.animations.add('attack',[0,1,2,3,4,5,6,7,8],15,false);
     this.walk = this.turret.animations.add('walk',[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],15,true);
-    // this.attack = this.turret.animations.add('attack');
-    this.turret.animations.play('walk', 15, true);
+    this.walk.play();
     
     this.gameObj.debug = true;
     this.turret.debug = true;
-    // this.gameObj.width = 1;
-    // this.gameObj.height = 1;
-    // this.turret.width = 1;
-    // this.turret.height = 1;
     game.physics.enable(this.gameObj, Phaser.Physics.ARCADE); 
     this.gameObj.body.immovable = false;
     this.gameObj.body.collideWorldBounds = true;
@@ -149,17 +143,6 @@ EnemyZombie.prototype.update = function() {
     this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
     this.gameObj.rotation = this.turret.rotation;
     game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
-    // if (!atk) {
-          // this.turret.animations.play('walk', 15, true);
-
-    // }
-    // else {
-          // this.turret.animations.play('zombieATK', 15, false);
-
-    // }
-
-    // game.physics.arcade.moveToObject(this.gameObj,this.player);
-
 };
 
 EnemyZombie.prototype.kill = function() {
@@ -330,20 +313,6 @@ Survive.prototype.update = function() {
     this.turret.x = this.gameObj.x;
     this.turret.y = this.gameObj.y;
 };
-
-// Survive.prototype.addZombie = function(target) {
-  
-    // var tempPlayer = game,Object.keys(playersList)[0]; 
-    // if(tempZombie++ == 1){
-    // console.log(target.x);
-    // console.log(target.y);
-    // console.log('1111111');
-    // console.log('SPAWN ZOMBIE');
-    // var tZombie = new EnemyZombie(myId + zombieID, game,Object.keys(playersList)[0]);
-    // zombieList[myId + zombieID] = tZombie;
-    // zombieID++;
-    // }
-// }
 
 Survive.prototype.fire = function(target) {
 		if (!this.alive) return;
@@ -525,14 +494,10 @@ function update () {
 
 function zombieATK (gameObj)
 {        
-// console.log(zombieList[gameObj.id]);
-  // zombieList[gameObj.id].turret.animations.stop(null, true);
-  // this.attack = zombieList[gameObj.id].turret.animations.add('attack');
-  // atk = true;
-
     zombieList[gameObj.id].turret.animations.play('attack', 15, false);
-
-  
+    zombieList[gameObj.id].turret.events.onAnimationComplete.add(function(){
+            zombieList[gameObj.id].walk.play();
+    }, this);
 }
 function te(gameObj){
   console.log("over");
