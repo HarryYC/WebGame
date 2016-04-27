@@ -204,12 +204,16 @@ Survive = function (index, game, player) {
     //this.shadow = game.add.sprite(x, y, 'shadow');
     this.gameObj = game.add.sprite(x, y, 'shadow');
     this.turret = game.add.sprite(x, y, 'player');
+    this.grave = game.add.sprite(x, y, 'grave');
     this.breath = this.turret.animations.add('breath');
     this.turret.animations.play('breath',5,true);
 
     //this.shadow.anchor.set(0.5);
     this.gameObj.anchor.set(0.5);
     this.turret.anchor.set(0.3, 0.5);
+    this.grave.anchor.set(0.4,0.5);
+    this.grave.alpha = 0;
+
 
     this.gameObj.id = index;
     game.physics.enable(this.gameObj, Phaser.Physics.ARCADE);
@@ -312,6 +316,8 @@ Survive.prototype.update = function() {
 
     this.turret.x = this.gameObj.x;
     this.turret.y = this.gameObj.y;
+    this.grave.x = this.gameObj.x; 
+    this.grave.y = this.gameObj.y;
 };
 
 Survive.prototype.fire = function(target) {
@@ -329,6 +335,7 @@ Survive.prototype.kill = function() {
 	this.alive = false;
 	this.gameObj.kill();
 	this.turret.kill();
+  this.grave.alpha = 1;
 }
 
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'shooting-game', { preload: preload, create: eurecaClientSetup, update: update, render: render });
@@ -340,7 +347,8 @@ function preload () {
     game.load.image('logo', 'assets/logo.png');
     game.load.spritesheet('player', 'assets/player.png',107,70,19);
     game.load.spritesheet('zombie', 'assets/zombie.png',90,97,26);
-    game.load.image('zombie1', 'assets/zombie1.png',71,71);
+    game.load.image('grave', 'assets/grave.png',50,50);
+    // game.load.image('zombie1', 'assets/zombie1.png',71,71);
     game.load.image('bullet', 'assets/bullet.png');
     game.load.image('grass', 'assets/light_grass.png');
     //game.load.spritesheet('kaboom1', 'assets/explosion.png', 64, 64, 23);
@@ -541,7 +549,7 @@ function render () {
   //game.debug.spriteBounds(playersList[myId].gameObj, 'rgb(0,255,0)',true);
       for (var i in playersList)
       {
-      game.debug.text('HP: ' + playersList[i].health + '/100', playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
+      game.debug.text('HP: ' + playersList[i].health + '/1000', playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
       // game.debug.text(playersList[i].gameObj.x,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
       // game.debug.text(playersList[i].gameObj.y,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 50);
       
