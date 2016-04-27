@@ -174,7 +174,7 @@ Survive = function (index, game, player) {
     var y = 0;
 
     this.game = game;
-    this.health = 100;
+    this.health = 1000;
     this.player = player;
     this.bullets = game.add.group();
     this.bullets.enableBody = true;
@@ -486,18 +486,27 @@ function update () {
       }
       if (playersList[i].alive)
       {
+        if (playersList[i].health < 0){
+          playersList[i].kill();
+        }
         playersList[i].update();
       }
          // game.physics.arcade.collide(this.zombieList, this.zombieList);      
     }
 }
 
-function zombieATK (gameObj)
+function zombieATK (zombie, player)
 {        
-    zombieList[gameObj.id].turret.animations.play('attack', 15, false);
-    zombieList[gameObj.id].turret.events.onAnimationComplete.add(function(){
-            zombieList[gameObj.id].walk.play();
+    zombieList[zombie.id].turret.animations.play('attack', 15, false);
+            zombieList[zombie.id].turret.events.onAnimationComplete.add(function(){
+            playersList[player.id].health--;
     }, this);
+    zombieList[zombie.id].turret.events.onAnimationComplete.add(function(){
+            zombieList[zombie.id].walk.play();
+    }, this);
+
+    
+    // player.gameObj.health--;
 }
 function te(gameObj){
   console.log("over");
