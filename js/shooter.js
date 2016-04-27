@@ -140,7 +140,7 @@ EnemyZombie.prototype.update = function() {
     //console.log(this.player);
     this.turret.x = this.gameObj.x;
     this.turret.y = this.gameObj.y;
-    this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
+    //this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
     //this.gameObj.rotation = this.turret.rotation;
     //game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
     // game.physics.arcade.moveToObject(this.gameObj,this.player);
@@ -186,6 +186,11 @@ Survive = function (index, game, player) {
     this.bullets.setAll('anchor.y', -0.5);
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('checkWorldBounds', true);	
+    
+    
+
+    
+    
     // this.bullets.setAll('width', 100);	
     // this.bullets.setAll('height', 100);	
     // this.localZombie = game.add.group();
@@ -474,9 +479,9 @@ function update () {
           //killtest = j;
           //console.log(playersList[j].gameObj);
           //game.physics.arcade.OVERLAP_BIAS = 5;
-          game.physics.arcade.collide(curSurvive, targetSurvive);
+          game.physics.arcade.collide(curSurvive, zombieList[j].gameObj);
           //game.physics.arcade.collide(curBullets, targetSurvive,bulletHitPlayer,null,this);
-          game.physics.arcade.overlap(curSurvive, targetSurvive, te,null,this);
+          game.physics.arcade.overlap(playersList[i].bullets, zombieList[j].gameObj, bulletHitPlayer,null,this);
         //game.debug.geom(playersList[j].gameObj, 'rgb(0,255,0)');
         // }
 
@@ -502,13 +507,15 @@ function update () {
 }
 function te(gameObj){
   console.log("over");
+  var explosionAnimation = explosions.getFirstExists(false);
+    explosionAnimation.reset(gameObj.x, gameObj.y);
+    explosionAnimation.play('kaboom', 30, false, true);
 }
 function bulletHitPlayer (gameObj, bullet) {
 
     //console.log(gameObj);
     //game.debug.bodyInfo(debugObj, 32, 32);
     //game.debug.geom(targetSurvive, 'rgb(0,255,0)');
- console.log(playersList[myId].bullets);
     bullet.kill();
     // console.log(zombieList[gameObj.id].health);
     if (zombieList[gameObj.id].health > 0){
