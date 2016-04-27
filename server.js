@@ -111,24 +111,24 @@ function initZombie (){
   x = [];
   y = [];
   randomPlayer = [];
-    // for (var i = 0; i < 5; i++)
-    // {
-      // x.push(Math.floor((Math.random() * 660) + 1));
-      // y.push(400);
-      // randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
-    // }
-  // for (var i = 0; i < 5; i++)
-    // {
-      // x.push(-60);
-      // y.push(Math.floor((Math.random() * 460) + 1));
-      // randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
-    // }
-  for (var i = 0; i < 10; i++)
+    for (var i = 0; i < 5; i++)
     {
       x.push(Math.floor((Math.random() * 660) + 1));
-      y.push(Math.floor((Math.random() * 400) + 1));
+      y.push(500);
       randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
     }
+  for (var i = 0; i < 5; i++)
+    {
+      x.push(-160);
+      y.push(Math.floor((Math.random() * 460) + 1));
+      randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
+    }
+  // for (var i = 0; i < 10; i++)
+    // {
+      // x.push(Math.floor((Math.random() * 660) + 1));
+      // y.push(Math.floor((Math.random() * 400) + 1));
+      // randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
+    // }
 
   
 }
