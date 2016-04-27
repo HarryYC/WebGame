@@ -197,15 +197,17 @@ Survive = function (index, game, player) {
     // this.localZombie.setAll('checkWorldBounds', true);
     
     this.currentSpeed =0;
-    this.fireRate = 100;
+    this.fireRate = 300;
     this.nextFire = 0;
     this.alive = true;
-
+    // this.attack = this.turret.animations.add('attack',[0,1,2,3,4,5,6,7,8],15,false);
+    // this.walk = this.turret.animations.add('walk',[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],15,true);
     //this.shadow = game.add.sprite(x, y, 'shadow');
     this.gameObj = game.add.sprite(x, y, 'shadow');
     this.turret = game.add.sprite(x, y, 'player');
     this.grave = game.add.sprite(x, y, 'grave');
-    this.breath = this.turret.animations.add('breath');
+    this.breath = this.turret.animations.add('breath',[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],true);
+    this.attack = this.turret.animations.add('attack',[20,21,22],false);
     this.turret.animations.play('breath',5,true);
 
     //this.shadow.anchor.set(0.5);
@@ -327,8 +329,12 @@ Survive.prototype.fire = function(target) {
             this.nextFire = this.game.time.now + this.fireRate;
             var bullet = this.bullets.getFirstDead();
             bullet.reset(this.turret.x, this.turret.y);
-
-			bullet.rotation = this.game.physics.arcade.moveToObject(bullet, target, 500);
+            bullet.rotation = this.game.physics.arcade.moveToObject(bullet, target, 500);
+            
+            this.turret.animations.play('attack', 15, false);
+            this.turret.events.onAnimationComplete.add(function(){
+            this.breath.play();
+    }, this);
         }
 }
 Survive.prototype.kill = function() {
@@ -345,7 +351,7 @@ function preload () {
  
     game.load.image('shadow', 'assets/shadow.png');
     game.load.image('logo', 'assets/logo.png');
-    game.load.spritesheet('player', 'assets/player.png',107,70,19);
+    game.load.spritesheet('player', 'assets/player.png',107,70,23);
     game.load.spritesheet('zombie', 'assets/zombie.png',90,97,26);
     game.load.image('grave', 'assets/grave.png',50,50);
     // game.load.image('zombie1', 'assets/zombie1.png',71,71);
