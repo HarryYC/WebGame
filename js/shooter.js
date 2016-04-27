@@ -100,7 +100,10 @@ EnemyZombie = function (index, x, y, game, player) {
     this.alive = true;
 
     this.gameObj = game.add.sprite(x, y, 'shadow');
-    this.turret = game.add.sprite(x, y, 'zombie1');
+    this.turret = game.add.sprite(x, y, 'zombieWalk');
+    this.walk = this.turret.animations.add('walk');
+    this.turret.animations.play('walk', 15, true);
+    
     this.gameObj.debug = true;
     this.turret.debug = true;
     // this.gameObj.width = 1;
@@ -140,9 +143,9 @@ EnemyZombie.prototype.update = function() {
     //console.log(this.player);
     this.turret.x = this.gameObj.x;
     this.turret.y = this.gameObj.y;
-    //this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
-    //this.gameObj.rotation = this.turret.rotation;
-    //game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
+    this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
+    this.gameObj.rotation = this.turret.rotation;
+    game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
     // game.physics.arcade.moveToObject(this.gameObj,this.player);
 
 };
@@ -181,7 +184,7 @@ Survive = function (index, game, player) {
     this.bullets = game.add.group();
     this.bullets.enableBody = true;
     this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
-    this.bullets.createMultiple(20, 'bullet', 0, false);
+    this.bullets.createMultiple(20, 'bullet');
     this.bullets.setAll('anchor.x', -1);
     this.bullets.setAll('anchor.y', -0.5);
     this.bullets.setAll('outOfBoundsKill', true);
@@ -355,6 +358,7 @@ function preload () {
     game.load.image('shadow', 'assets/shadow.png');
     game.load.image('logo', 'assets/logo.png');
     game.load.spritesheet('player', 'assets/player.png',107,70,19);
+    game.load.spritesheet('zombieWalk', 'assets/zombieWalk.png',90,97,17);
     game.load.image('zombie1', 'assets/zombie1.png',71,71);
     game.load.image('bullet', 'assets/bullet.png');
     game.load.image('grass', 'assets/light_grass.png');
@@ -535,26 +539,25 @@ function bulletHitPlayer (gameObj, bullet) {
 function render () {
   //game.debug.geom(point, 'rgb(0,255,0)');
   if (!ready) return;
-      game.debug.quadTree(game.physics.arcade.quadTree);
   //game.debug.spriteBounds(playersList[myId].gameObj, 'rgb(0,255,0)',true);
       for (var i in playersList)
       {
-      // game.debug.text('HP: ' + playersList[i].health + '/100', playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
-      game.debug.text(playersList[i].gameObj.x,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
-      game.debug.text(playersList[i].gameObj.y,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 50);
+      game.debug.text('HP: ' + playersList[i].health + '/100', playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
+      // game.debug.text(playersList[i].gameObj.x,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
+      // game.debug.text(playersList[i].gameObj.y,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 50);
       
-       game.debug.spriteBounds(playersList[i].gameObj);
-       game.debug.body(playersList[i].bullets);
-       game.debug.bodyInfo(playersList[i].bullets);
+       // game.debug.spriteBounds(playersList[i].gameObj);
+       // game.debug.body(playersList[i].bullets);
+       // game.debug.bodyInfo(playersList[i].bullets);
       
       }
-      for (var j in zombieList)
-      {
-      game.debug.body(zombieList[j]);
-      game.debug.bodyInfo(zombieList[j]);
-      game.debug.spriteInfo(zombieList[j].gameObj,32,32);
-      game.debug.spriteBounds(zombieList[j].gameObj);
+      // for (var j in zombieList)
+      // {
+      // game.debug.body(zombieList[j]);
+      // game.debug.bodyInfo(zombieList[j]);
+      // game.debug.spriteInfo(zombieList[j].gameObj,32,32);
+      // game.debug.spriteBounds(zombieList[j].gameObj);
       // game.debug.spriteBounds(zombieList[j].gameObj,'rgb(0,255,0)',true);
-      }
+      // }
 }
 
