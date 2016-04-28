@@ -100,33 +100,52 @@ EnemyZombie = function (index, x, y, game, player) {
     this.alive = true;
 
     this.gameObj = game.add.sprite(x, y, 'shadow');
-    this.turret = game.add.sprite(x, y, 'zombie');
-    this.item = game.add.sprite(x, y, 'potion');
-    
-    
-    this.item.burst = game.add.sprite(x, y, 'burst');
-    this.item.burst.show = this.item.burst.animations.add('show');
-    this.item.burst.animations.play('show',20,true);
-    // zombieList[zombie.id].turret.animations.play('attack', 15, false);
-    this.item.alpha = 0;
-    this.item.burst.alpha = 0;
-     
-    this.attack = this.turret.animations.add('attack',[0,1,2,3,4,5,6,7,8],15,false);
-    this.walk = this.turret.animations.add('walk',[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],15,true);
-    this.walk.play();
-    
-    this.gameObj.debug = true;
-    this.turret.debug = true;
     game.physics.enable(this.gameObj, Phaser.Physics.ARCADE); 
     this.gameObj.body.immovable = false;
     this.gameObj.body.collideWorldBounds = true;
     this.gameObj.body.bounce.setTo(0, 0);
     this.gameObj.anchor.set(0.5);
-    this.turret.anchor.set(0.3, 0.5);
-    this.item.anchor.set(0.3, 0.5);
-    this.item.burst.anchor.set(0.3, 0.5);
     this.gameObj.id = index;
     this.gameObj.name = index.toString();
+    
+    this.turret = game.add.sprite(x, y, 'zombie');
+    this.turret.anchor.set(0.3, 0.5);
+    this.attack = this.turret.animations.add('attack',[0,1,2,3,4,5,6,7,8],15,false);
+    this.walk = this.turret.animations.add('walk',[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],15,true);
+    this.walk.play();
+    
+    var randomItem = Math.floor((Math.random() * 100) + 1);
+    if (randomItem > 1 && randomItem < 20){
+      this.item = game.add.sprite(x, y, 'potion');
+    } else if (randomItem > 3 && randomItem < 30) {
+      this.item = game.add.sprite(x, y, 'shoes');
+    } else {
+      this.item = {};
+    }
+ 
+
+    if (Object.keys(this.item).length == 0) {
+      this.item.burst = {};
+    } else {
+    this.item.burst = game.add.sprite(x, y, 'burst');
+    this.item.burst.show = this.item.burst.animations.add('show');
+    this.item.burst.animations.play('show',20,true);
+    this.item.burst.alpha = 1;
+    this.item.burst.anchor.set(0.3, 0.5);
+    this.item.anchor.set(0.3, 0.5);
+    this.item.alpha = 1; 
+    }
+    // this.item = game.add.sprite(x, y, 'potion');
+   
+    // 
+    // this.item.burst = {};
+    
+    // this.item.burst = game.add.sprite(x, y, 'burst');
+    // this.item.burst.show = this.item.burst.animations.add('show');
+    // this.item.burst.animations.play('show',20,true);
+    // this.item.burst.alpha = 0;
+    // this.item.burst.anchor.set(0.3, 0.5);
+
 
 };
 
@@ -378,6 +397,7 @@ function preload () {
     //game.load.spritesheet('kaboom1', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('kaboom', 'assets/blood.png', 150, 150, 6);
     game.load.image('potion', 'assets/potion.png',64,64);
+    game.load.image('shoes', 'assets/shoes.png',64,64);
     game.load.spritesheet('burst', 'assets/burst.png', 64, 64, 60);
 
     key1 = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
