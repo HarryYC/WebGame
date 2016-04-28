@@ -102,11 +102,15 @@ EnemyZombie = function (index, x, y, game, player) {
     this.gameObj = game.add.sprite(x, y, 'shadow');
     this.turret = game.add.sprite(x, y, 'zombie');
     this.item = game.add.sprite(x, y, 'potion');
-    this.item.burst = game.add.sprite(x, y, 'potion');
-    this.item.burst.show = this.item.burst.animations.add('burst');
-    this.item.burst.show.play();
+    
+    
+    this.item.burst = game.add.sprite(x, y, 'burst');
+    this.item.burst.show = this.item.burst.animations.add('show');
+    this.item.burst.animations.play('show',20,true);
+    // zombieList[zombie.id].turret.animations.play('attack', 15, false);
     this.item.alpha = 0;
-    this.burst
+    this.item.burst.alpha = 0;
+     
     this.attack = this.turret.animations.add('attack',[0,1,2,3,4,5,6,7,8],15,false);
     this.walk = this.turret.animations.add('walk',[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],15,true);
     this.walk.play();
@@ -120,6 +124,7 @@ EnemyZombie = function (index, x, y, game, player) {
     this.gameObj.anchor.set(0.5);
     this.turret.anchor.set(0.3, 0.5);
     this.item.anchor.set(0.3, 0.5);
+    this.item.burst.anchor.set(0.3, 0.5);
     this.gameObj.id = index;
     this.gameObj.name = index.toString();
 
@@ -148,10 +153,12 @@ EnemyZombie.prototype.update = function() {
     this.turret.x = this.gameObj.x;
     this.turret.y = this.gameObj.y;
     this.item.x = this.gameObj.x; 
-    this.item.y = this.gameObj.y;
-    // this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
-    // this.gameObj.rotation = this.turret.rotation;
-    // game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
+    this.item.y = this.gameObj.y;    
+    this.item.burst.x = this.gameObj.x; 
+    this.item.burst.y = this.gameObj.y;
+    this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
+    this.gameObj.rotation = this.turret.rotation;
+    game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
 };
 
 EnemyZombie.prototype.kill = function() {
@@ -159,6 +166,7 @@ EnemyZombie.prototype.kill = function() {
 	this.gameObj.kill();
 	this.turret.kill();
   this.item.alpha = 1;
+  this.item.burst.alpha = 1;
 }
 
 Survive = function (index, game, player) {
@@ -207,7 +215,7 @@ Survive = function (index, game, player) {
     // this.localZombie.setAll('checkWorldBounds', true);
     
     this.currentSpeed =0;
-    this.fireRate = 300;
+    this.fireRate = 100;
     this.nextFire = 0;
     this.alive = true;
     // this.attack = this.turret.animations.add('attack',[0,1,2,3,4,5,6,7,8],15,false);
