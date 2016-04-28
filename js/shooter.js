@@ -101,6 +101,12 @@ EnemyZombie = function (index, x, y, game, player) {
 
     this.gameObj = game.add.sprite(x, y, 'shadow');
     this.turret = game.add.sprite(x, y, 'zombie');
+    this.item = game.add.sprite(x, y, 'potion');
+    this.item.burst = game.add.sprite(x, y, 'potion');
+    this.item.burst.show = this.item.burst.animations.add('burst');
+    this.item.burst.show.play();
+    this.item.alpha = 0;
+    this.burst
     this.attack = this.turret.animations.add('attack',[0,1,2,3,4,5,6,7,8],15,false);
     this.walk = this.turret.animations.add('walk',[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],15,true);
     this.walk.play();
@@ -113,6 +119,7 @@ EnemyZombie = function (index, x, y, game, player) {
     this.gameObj.body.bounce.setTo(0, 0);
     this.gameObj.anchor.set(0.5);
     this.turret.anchor.set(0.3, 0.5);
+    this.item.anchor.set(0.3, 0.5);
     this.gameObj.id = index;
     this.gameObj.name = index.toString();
 
@@ -140,15 +147,18 @@ EnemyZombie.prototype.update = function() {
     //console.log(this.player);
     this.turret.x = this.gameObj.x;
     this.turret.y = this.gameObj.y;
-    this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
-    this.gameObj.rotation = this.turret.rotation;
-    game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
+    this.item.x = this.gameObj.x; 
+    this.item.y = this.gameObj.y;
+    // this.turret.rotation = this.game.physics.arcade.angleBetween(this.gameObj, this.player);
+    // this.gameObj.rotation = this.turret.rotation;
+    // game.physics.arcade.moveToXY(this.gameObj,this.player.x - 30,this.player.y - 30,50);
 };
 
 EnemyZombie.prototype.kill = function() {
 	this.alive = false;
 	this.gameObj.kill();
 	this.turret.kill();
+  this.item.alpha = 1;
 }
 
 Survive = function (index, game, player) {
@@ -359,6 +369,9 @@ function preload () {
     game.load.image('grass', 'assets/light_grass.png');
     //game.load.spritesheet('kaboom1', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('kaboom', 'assets/blood.png', 150, 150, 6);
+    game.load.image('potion', 'assets/potion.png',64,64);
+    game.load.spritesheet('burst', 'assets/burst.png', 64, 64, 60);
+
     key1 = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
     key1.onDown.add(startGame, this);
     
