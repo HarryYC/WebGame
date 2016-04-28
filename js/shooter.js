@@ -130,10 +130,10 @@ EnemyZombie = function (index, x, y, game, player) {
     this.item.burst = game.add.sprite(x, y, 'burst');
     this.item.burst.show = this.item.burst.animations.add('show');
     this.item.burst.animations.play('show',20,true);
-    this.item.burst.alpha = 1;
+    this.item.burst.alpha = 0;
     this.item.burst.anchor.set(0.3, 0.5);
     this.item.anchor.set(0.3, 0.5);
-    this.item.alpha = 1; 
+    this.item.alpha = 0; 
     }
     // this.item = game.add.sprite(x, y, 'potion');
    
@@ -576,6 +576,7 @@ function bulletHitPlayer (gameObj, bullet) {
     //game.debug.geom(targetSurvive, 'rgb(0,255,0)');
     bullet.kill();
     // console.log(zombieList[gameObj.id].health);
+    if (!zombieList[gameObj.id]) return;
     if (zombieList[gameObj.id].health > 0){
       zombieList[gameObj.id].health--;
     }else
