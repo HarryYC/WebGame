@@ -206,9 +206,9 @@ Survive = function (index, game, player) {
     this.gameObj = game.add.sprite(x, y, 'shadow');
     this.turret = game.add.sprite(x, y, 'player');
     this.grave = game.add.sprite(x, y, 'grave');
-    this.breath = this.turret.animations.add('breath',[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],true);
-    this.attack = this.turret.animations.add('attack',[20,21,22],false);
-    this.turret.animations.play('breath',5,true);
+    this.breath = this.turret.animations.add('breath',[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],20,true);
+    this.attack = this.turret.animations.add('attack',[20,21,22],15,false);
+    this.turret.animations.play('breath');
 
     //this.shadow.anchor.set(0.5);
     this.gameObj.anchor.set(0.5);
@@ -331,7 +331,7 @@ Survive.prototype.fire = function(target) {
             bullet.reset(this.turret.x, this.turret.y);
             bullet.rotation = this.game.physics.arcade.moveToObject(bullet, target, 500);
             
-            this.turret.animations.play('attack', 15, false);
+            this.turret.animations.play('attack');
             this.turret.events.onAnimationComplete.add(function(){
             this.breath.play();
     }, this);
@@ -344,7 +344,7 @@ Survive.prototype.kill = function() {
   this.grave.alpha = 1;
 }
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'shooting-game', { preload: preload, create: eurecaClientSetup, update: update, render: render });
+var game = new Phaser.Game(1024, 768, Phaser.CANVAS, 'shooting-game', { preload: preload, create: eurecaClientSetup, update: update, render: render });
 
 function preload () {
 
@@ -378,11 +378,11 @@ function startGame () {
 function create () {
 
     //  Resize our game world to be a 2000 x 2000 square
-    game.world.setBounds(-100, -100, 800, 600);
+    game.world.setBounds(-100, -100, 1024, 768);
 	game.stage.disableVisibilityChange  = true;
 	
     //  Our tiled scrolling background
-    land = game.add.tileSprite(0, 0, 800, 600, 'grass');
+    land = game.add.tileSprite(0, 0, 1024, 768, 'grass');
     land.fixedToCamera = true;
     
     playersList = {};
@@ -425,7 +425,7 @@ function create () {
 	
 }
 function addLogo() {
-    logo = game.add.sprite(0, 100, 'logo');
+    logo = game.add.sprite(80, 200, 'logo');
     logo.fixedToCamera = true;
 }
 function removeLogo () {
@@ -555,7 +555,7 @@ function render () {
   //game.debug.spriteBounds(playersList[myId].gameObj, 'rgb(0,255,0)',true);
       for (var i in playersList)
       {
-      game.debug.text('HP: ' + playersList[i].health + '/1000', playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
+      game.debug.text('HP: ' + playersList[i].health + '/1000', playersList[i].gameObj.x + 35, playersList[i].gameObj.y + 50);
       // game.debug.text(playersList[i].gameObj.x,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
       // game.debug.text(playersList[i].gameObj.y,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 50);
       
