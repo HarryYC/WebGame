@@ -67,12 +67,12 @@ var eurecaClientSetup = function() {
 
 	}
   
-  eurecaClient.exports.spawnZombie = function(zombieID, x, y, signToPlayer)
+  eurecaClient.exports.spawnZombie = function(zombieID, x, y, signToPlayer,randomNum)
 	{ 
     playerID = signToPlayer;
 //		console.log('SPAWN ZOMBIE');
 //    console.log(playerID);
-    var tnk1 = new EnemyZombie(zombieID, x, y, game,playersList[playerID].gameObj);
+    var tnk1 = new EnemyZombie(zombieID, x, y, game,playersList[playerID].gameObj,randomNum);
     zombieList[zombieID] = tnk1;
 	}
 	
@@ -89,7 +89,7 @@ var eurecaClientSetup = function() {
 	}
 }
 
-EnemyZombie = function (index, x, y, game, player) {
+EnemyZombie = function (index, x, y, game, player, randomNum) {
 
     // var x = Math.floor((Math.random() * 500) + 1);
     // var y = Math.floor((Math.random() * 500) + 1);
@@ -98,6 +98,7 @@ EnemyZombie = function (index, x, y, game, player) {
     this.health = 3;
     this.player = player;
     this.alive = true;
+    this.randomNum = randomNum;
 
     this.gameObj = game.add.sprite(x, y, 'shadow');
     game.physics.enable(this.gameObj, Phaser.Physics.ARCADE); 
@@ -113,11 +114,12 @@ EnemyZombie = function (index, x, y, game, player) {
     this.attack = this.turret.animations.add('attack',[0,1,2,3,4,5,6,7,8],15,false);
     this.walk = this.turret.animations.add('walk',[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],15,true);
     this.walk.play();
+    // console.log(this.randomNum);
     
-    var randomItem = Math.floor((Math.random() * 100) + 1);
-    if (randomItem > 1 && randomItem < 20){
+    // var randomItem = Math.floor((Math.random() * 100) + 1);
+    if (this.randomNum > 1 && this.randomNum < 20){
       this.item = game.add.sprite(x, y, 'potion');
-    } else if (randomItem > 3 && randomItem < 30) {
+    } else if (this.randomNum > 3 && this.randomNum < 30) {
       this.item = game.add.sprite(x, y, 'shoes');
     } else {
       this.item = {};

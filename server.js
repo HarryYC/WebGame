@@ -7,6 +7,7 @@ var gamestart = false;
 var x = [];
 var y = [];
 var randomPlayer = [];
+var randomNum = [];
 
 app.use(express.static(__dirname));
 
@@ -68,7 +69,7 @@ eurecaServer.exports.begin = function()
     //debug
     for (var i = 0; i < 10; i++){
       remote.spawnZombie(zombieID++, x[i], y[i], 
-                      clients[Object.keys(clients)[randomPlayer[i]]].id);		
+                      clients[Object.keys(clients)[randomPlayer[i]]].id, randomNum[i]);		
 		}
 	}
 }
@@ -111,17 +112,20 @@ function initZombie (){
   x = [];
   y = [];
   randomPlayer = [];
+  randomNum = [];
     for (var i = 0; i < 5; i++)
     {
       x.push(Math.floor((Math.random() * 660) + 1));
       y.push(500);
       randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
+      randomNum.push(Math.floor((Math.random() * 100) + 1));
     }
   for (var i = 0; i < 5; i++)
     {
       x.push(-160);
       y.push(Math.floor((Math.random() * 460) + 1));
       randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
+      randomNum.push(Math.floor((Math.random() * 100) + 1));
     }
   // for (var i = 0; i < 10; i++)
     // {
