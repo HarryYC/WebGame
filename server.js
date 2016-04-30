@@ -97,8 +97,7 @@ eurecaServer.exports.handleKeys = function (keys) {
 //    }
 //  }
   if (keys.addZombie == true){
-    remote.spawnZombie(zombieID++, x[0], y[0], 
-                       clients[Object.keys(clients)[randomPlayer[0]]].id);
+   console.log("right click call");
   }
 		remote.updateState(updatedClient.id, keys);
 		clients[c].laststate = keys;

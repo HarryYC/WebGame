@@ -348,7 +348,7 @@ Survive.prototype.update = function() {
 	
 	  if (this.cursor.addZombie)
     {	
-		// this.addZombie({x:this.cursor.tx, y:this.cursor.ty});
+		console.log("right click");
     }
 	
     if (this.currentSpeed > 0)
@@ -500,8 +500,8 @@ function update () {
 	player.input.up = cursors.up.isDown;
   player.input.down = cursors.down.isDown;
 	player.input.fire = game.input.activePointer.leftButton.isDown;
-  player.input.addZombie = game.input.activePointer.middleButton.isDown;
-  // player.input.addZombie = game.input.activePointer.rightButton.isDown;
+  // player.input.addZombie = game.input.activePointer.middleButton.isDown;
+  player.input.addZombie = game.input.activePointer.rightButton.isDown;
 	player.input.tx = game.input.x + game.camera.x;
 	player.input.ty = game.input.y + game.camera.y;
 	
