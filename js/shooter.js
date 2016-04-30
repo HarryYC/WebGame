@@ -22,8 +22,9 @@ var zombieID = 0;
 var playerID;
 var itemList;
 var itemID = 0;
-var playerSpeed = 150;
+var playerSpeed = 200;
 var bgm;
+var gunShot;
 //-------temp var for addZombie test-------//
 // var tempZombie = 1;
 // var targetSurvive;
@@ -372,6 +373,7 @@ Survive.prototype.fire = function(target) {
         if (this.game.time.now > this.nextFire && this.bullets.countDead() > 0)
         {
             this.nextFire = this.game.time.now + this.fireRate;
+            gunShot.play();
             var bullet = this.bullets.getFirstDead();
             bullet.reset(this.turret.x, this.turret.y);
             bullet.rotation = this.game.physics.arcade.moveToObject(bullet, target, 500);
@@ -394,7 +396,7 @@ var game = new Phaser.Game(1024, 768, Phaser.CANVAS, 'shooting-game', { preload:
 function preload () {
 
     game.load.audio('07', 'assets/07.mp3');
-    game.load.audio('27', 'assets/27.mp3');
+    game.load.audio('gunShot', 'assets/gun-shot.mp3');
     game.load.image('shadow', 'assets/shadow.png');
     game.load.image('logo', 'assets/logo.png');
     game.load.spritesheet('player', 'assets/player.png',107,70,23);
@@ -428,7 +430,8 @@ function startGame () {
 function create () {
 
     //  Resize our game world to be a 2000 x 2000 square
-     bgm = game.add.audio('07');
+     bgm = game.add.audio('07',1,true);
+     gunShot = game.add.audio('gunShot',-0.5);
      bgm.play();
     game.world.setBounds(-100, -100, 1024, 768);
 	game.stage.disableVisibilityChange  = true;
@@ -641,7 +644,7 @@ function render () {
       // game.debug.text(playersList[i].gameObj.x,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
       // game.debug.text(playersList[i].gameObj.y,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 50);
       
-       game.debug.spriteBounds(playersList[i].gameObj);
+       //game.debug.spriteBounds(playersList[i].gameObj);
        // game.debug.body(playersList[i].bullets);
        // game.debug.bodyInfo(playersList[i].bullets);
       
