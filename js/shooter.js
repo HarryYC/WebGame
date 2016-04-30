@@ -20,6 +20,9 @@ var zombieList;
 var gameStart = false;
 var zombieID = 0;
 var playerID;
+var itemList;
+var itemID = 0;
+var playerSpeed = 150;
 //-------temp var for addZombie test-------//
 // var tempZombie = 1;
 // var targetSurvive;
@@ -136,6 +139,7 @@ EnemyZombie = function (index, x, y, game, player, randomNum) {
     this.item.burst.anchor.set(0.3, 0.5);
     this.item.anchor.set(0.3, 0.5);
     this.item.alpha = 0; 
+    game.physics.enable(this.item, Phaser.Physics.ARCADE); 
     }
     // this.item = game.add.sprite(x, y, 'potion');
    
@@ -236,6 +240,7 @@ Survive = function (index, game, player) {
     // this.localZombie.setAll('checkWorldBounds', true);
     
     this.currentSpeed =0;
+    this.speed = 150;
     this.fireRate = 100;
     this.nextFire = 0;
     this.alive = true;
@@ -306,20 +311,20 @@ Survive.prototype.update = function() {
     {
         // this.gameObj.x += -2;
         this.gameObj.angle = 180;
-        this.currentSpeed = 300;
+        this.currentSpeed = this.speed;
     }
     else if (this.cursor.right)
     {
         // this.gameObj.x += 2;
         this.gameObj.angle = 0;
-        this.currentSpeed = 300;
+        this.currentSpeed = this.speed;
 
     }	
     if (this.cursor.up)
     {
         // this.gameObj.y += -2;
         this.gameObj.angle = 270;
-        this.currentSpeed = 300;
+        this.currentSpeed = this.speed;
                
 
     }
@@ -327,7 +332,7 @@ Survive.prototype.update = function() {
     {
         // this.gameObj.y += 2;
         this.gameObj.angle = 90;
-        this.currentSpeed = 300;
+        this.currentSpeed = this.speed;
     }
     else
     {
@@ -430,6 +435,7 @@ function create () {
     
     playersList = {};
     zombieList = {};
+    itemList = {};
 	
 	player = new Survive(myId, game, gameObj);
 	playersList[myId] = player;
@@ -521,26 +527,34 @@ function update () {
           //killtest = j;
           //console.log(playersList[j].gameObj);
           //game.physics.arcade.OVERLAP_BIAS = 5;
+          // game.physics.arcade.overlap(zombieList[j].item,curSurvive,pickupItem,null,this);
+          
           game.physics.arcade.collide(zombieList[j].gameObj,curSurvive,zombieATK,null,this);
           //game.physics.arcade.collide(curBullets, targetSurvive,bulletHitPlayer,null,this);
           game.physics.arcade.overlap(playersList[i].bullets, zombieList[j].gameObj, bulletHitPlayer,null,this);
+
+
+
         //game.debug.geom(playersList[j].gameObj, 'rgb(0,255,0)');
         // }
 
-	if (j in zombieList)
-	{
-        if (zombieList[j].alive)
+        if (j in zombieList)
         {
+          if (zombieList[j].alive)
+          {
           zombieList[j].update();
-                       for (var k in zombieList)
-      {
-
-        game.physics.arcade.collide(zombieList[j].gameObj, zombieList[k].gameObj);
-      }
+          for (var k in zombieList)
+            {
+              game.physics.arcade.collide(zombieList[j].gameObj, zombieList[k].gameObj);
+            }
+          }
         }
-	  }
 
       }
+       for (var k in itemList){
+           // console.log(itemList[k]);
+            game.physics.arcade.overlap(itemList[k],curSurvive, pickupItem,null,this);
+          }
       if (playersList[i].alive)
       {
         if (playersList[i].health < 0){
@@ -551,7 +565,24 @@ function update () {
          // game.physics.arcade.collide(this.zombieList, this.zombieList);      
     }
 }
-
+function pickupItem (item, player)
+{
+  console.log(item);
+  if (item.key == "potion"){
+    if (playersList[player.id].health > 900)
+    {
+      playersList[player.id].health = 1000;
+    } else {
+      playersList[player.id].health += 100;
+    }
+  } else if (item.key == "shoes"){
+    playersList[player.id].speed += 50;
+  } else {}
+     item.kill();
+     item.burst.kill();
+  // console.log(player);
+  
+}
 function zombieATK (zombie, player)
 {        
     zombieList[zombie.id].turret.animations.play('attack', 15, false);
@@ -583,6 +614,9 @@ function bulletHitPlayer (gameObj, bullet) {
       zombieList[gameObj.id].health--;
     }else
     {
+      if (zombieList[gameObj.id].item){
+        itemList[itemID++] = zombieList[gameObj.id].item;
+      }
        zombieList[gameObj.id].kill();
        delete zombieList[gameObj.id];
     }
@@ -603,7 +637,7 @@ function render () {
       // game.debug.text(playersList[i].gameObj.x,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
       // game.debug.text(playersList[i].gameObj.y,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 50);
       
-       // game.debug.spriteBounds(playersList[i].gameObj);
+       game.debug.spriteBounds(playersList[i].gameObj);
        // game.debug.body(playersList[i].bullets);
        // game.debug.bodyInfo(playersList[i].bullets);
       
@@ -615,6 +649,9 @@ function render () {
       // game.debug.spriteInfo(zombieList[j].gameObj,32,32);
       // game.debug.spriteBounds(zombieList[j].gameObj);
       // game.debug.spriteBounds(zombieList[j].gameObj,'rgb(0,255,0)',true);
+      // }
+      // for (var k in itemList){
+        // game.debug.spriteBounds(itemList[k]);
       // }
 }
 
