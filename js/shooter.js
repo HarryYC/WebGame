@@ -23,6 +23,7 @@ var playerID;
 var itemList;
 var itemID = 0;
 var playerSpeed = 150;
+var bgm;
 //-------temp var for addZombie test-------//
 // var tempZombie = 1;
 // var targetSurvive;
@@ -392,7 +393,8 @@ var game = new Phaser.Game(1024, 768, Phaser.CANVAS, 'shooting-game', { preload:
 
 function preload () {
 
- 
+    game.load.audio('07', 'assets/07.mp3');
+    game.load.audio('27', 'assets/27.mp3');
     game.load.image('shadow', 'assets/shadow.png');
     game.load.image('logo', 'assets/logo.png');
     game.load.spritesheet('player', 'assets/player.png',107,70,23);
@@ -426,6 +428,8 @@ function startGame () {
 function create () {
 
     //  Resize our game world to be a 2000 x 2000 square
+     bgm = game.add.audio('07');
+     bgm.play();
     game.world.setBounds(-100, -100, 1024, 768);
 	game.stage.disableVisibilityChange  = true;
 	
