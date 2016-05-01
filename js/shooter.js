@@ -399,7 +399,7 @@ var game = new Phaser.Game(1024, 768, Phaser.CANVAS, 'shooting-game', { preload:
 
 function preload () {
 
-    game.load.audio('07', 'assets/07.mp3');
+    // game.load.audio('07', 'assets/07.mp3');
     game.load.audio('gunShot', 'assets/gun-shot.mp3');
     game.load.audio('zombieRoar', 'assets/zombie-roar.wav');
     game.load.image('shadow', 'assets/shadow.png');
@@ -409,12 +409,13 @@ function preload () {
     game.load.image('grave', 'assets/grave.png',50,50);
     // game.load.image('zombie1', 'assets/zombie1.png',71,71);
     game.load.image('bullet', 'assets/bullet.png');
-    game.load.image('grass', 'assets/light_grass.png');
+    game.load.image('grass', 'assets/dark_grass.png');
     //game.load.spritesheet('kaboom1', 'assets/explosion.png', 64, 64, 23);
     game.load.spritesheet('kaboom', 'assets/blood.png', 150, 150, 6);
     game.load.image('potion', 'assets/potion.png',64,64);
     game.load.image('shoes', 'assets/shoes.png',64,64);
     game.load.spritesheet('burst', 'assets/burst.png', 64, 64, 60);
+    game.load.spritesheet('rain', 'assets/rain.png', 17, 17);
 
     key1 = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
     key1.onDown.add(startGame, this);
@@ -446,6 +447,24 @@ function create () {
     //  Our tiled scrolling background
     land = game.add.tileSprite(0, 0, 1024, 768, 'grass');
     land.fixedToCamera = true;
+    	var emitter = game.add.emitter(game.world.centerX, -100, 400);
+
+	emitter.width = game.world.width;
+	// emitter.angle = 30; // uncomment to set an angle for the rain.
+
+	emitter.makeParticles('rain');
+
+	emitter.minParticleScale = 0.1;
+	emitter.maxParticleScale = 0.8;
+  emitter.alpha = 0.6;
+	emitter.setYSpeed(800, 1200);
+	emitter.setXSpeed(-5, 5);
+
+	emitter.minRotation = 0;
+	emitter.maxRotation = 0;
+
+	emitter.start(false, 1600, 0, 0);
+    
     
     playersList = {};
     zombieList = {};
