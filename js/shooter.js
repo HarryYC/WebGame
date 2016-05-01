@@ -116,6 +116,9 @@ EnemyZombie = function (index, x, y, game, player, randomNum) {
     this.gameObj.name = index.toString();
     
     this.turret = game.add.sprite(x, y, 'zombie');
+    // var ran = '0x'+Math.floor(Math.random()*16777215).toString(16);
+    // console.log(ran);
+    // this.turret.tint = ran;
     this.turret.anchor.set(0.3, 0.5);
     this.attack = this.turret.animations.add('attack',[0,1,2,3,4,5,6,7,8],15,false);
     this.walk = this.turret.animations.add('walk',[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],15,true);
