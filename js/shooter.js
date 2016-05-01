@@ -25,6 +25,7 @@ var itemID = 0;
 var playerSpeed = 200;
 var bgm;
 var gunShot;
+var zombieRoar;
 //-------temp var for addZombie test-------//
 // var tempZombie = 1;
 // var targetSurvive;
@@ -397,6 +398,7 @@ function preload () {
 
     game.load.audio('07', 'assets/07.mp3');
     game.load.audio('gunShot', 'assets/gun-shot.mp3');
+    game.load.audio('zombieRoar', 'assets/zombie-roar.wav');
     game.load.image('shadow', 'assets/shadow.png');
     game.load.image('logo', 'assets/logo.png');
     game.load.spritesheet('player', 'assets/player.png',107,70,23);
@@ -424,6 +426,7 @@ function startGame () {
     // this.eurecaClientSetup.addZombie(1, 0, 0, myId)
     if (gameStart == true) return;
       eurecaServer.begin();
+      zombieRoar.play();
 }
 
 
@@ -432,6 +435,7 @@ function create () {
     //  Resize our game world to be a 2000 x 2000 square
      bgm = game.add.audio('07',1,true);
      gunShot = game.add.audio('gunShot',-0.5);
+     zombieRoar = game.add.audio('zombieRoar');
      bgm.play();
     game.world.setBounds(-100, -100, 1024, 768);
 	game.stage.disableVisibilityChange  = true;
