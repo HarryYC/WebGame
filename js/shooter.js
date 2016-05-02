@@ -25,6 +25,7 @@ var bgm;
 var gunShot;
 var zombieRoar;
 var zombieAttack;
+var playerDead;
 //-------temp var for addZombie test-------//
 // var tempZombie = 1;
 // var targetSurvive;
@@ -403,6 +404,7 @@ Survive.prototype.fire = function(target) {
 }
 Survive.prototype.kill = function() {
     this.alive = false;
+    playerDead.play();
     this.gameObj.kill();
     this.turret.kill();
     this.hp.kill();
@@ -423,6 +425,7 @@ function preload() {
     game.load.audio('gunShot', 'assets/gun-shot.mp3');
     game.load.audio('zombieRoar', 'assets/zombie-roar.wav');
     game.load.audio('zombieAttack', 'assets/zombie-attack.wav');
+    game.load.audio('playerDead', 'assets/player-dead.wav');
     game.load.image('shadow', 'assets/shadow.png');
     game.load.image('logo', 'assets/logo.png');
     game.load.spritesheet('player', 'assets/player.png', 107, 70, 23);
@@ -463,6 +466,7 @@ function create() {
     gunShot = game.add.audio('gunShot', -0.5);
     zombieRoar = game.add.audio('zombieRoar');
     zombieAttack = game.add.audio('zombieAttack');
+    playerDead = game.add.audio('playerDead',2.5);
     bgm.play();
     game.world.setBounds(-100, -100, 2000, 2000);
     game.stage.disableVisibilityChange = true;
@@ -470,6 +474,9 @@ function create() {
     //  Our tiled scrolling background
     land = game.add.tileSprite(0, 0, 1024, 768, 'grass');
     land.fixedToCamera = true;
+    // land.tint = 0xff0000;
+
+
     var emitter = game.add.emitter(game.world.centerX, -100, 400);
 
     emitter.width = game.world.width;
