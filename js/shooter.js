@@ -21,11 +21,15 @@ var playerID;
 var itemList;
 var itemID = 0;
 var playerSpeed = 200;
+//sound effects
 var bgm;
 var gunShot;
 var zombieRoar;
 var zombieAttack;
 var playerDead;
+var playerHealthUp;
+var playerFireRateUp;
+var playerSpeedUp;
 //-------temp var for addZombie test-------//
 // var tempZombie = 1;
 // var targetSurvive;
@@ -426,6 +430,10 @@ function preload() {
     game.load.audio('zombieRoar', 'assets/zombie-roar.wav');
     game.load.audio('zombieAttack', 'assets/zombie-attack.wav');
     game.load.audio('playerDead', 'assets/player-dead.wav');
+    game.load.audio('playerHealthUp', 'assets/health-up.mp3');
+    game.load.audio('playerFireRateUp', 'assets/fireRate-up.wav');
+    game.load.audio('playerSpeedUp', 'assets/speed-up.wav');
+
     game.load.image('shadow', 'assets/shadow.png');
     game.load.image('logo', 'assets/logo.png');
     game.load.spritesheet('player', 'assets/player.png', 107, 70, 23);
@@ -465,6 +473,9 @@ function create() {
     bgm = game.add.audio('07', 1, true);
     gunShot = game.add.audio('gunShot', -0.5);
     zombieRoar = game.add.audio('zombieRoar');
+    playerHealthUp = game.add.audio('playerHealthUp');
+    playerFireRateUp = game.add.audio('playerFireRateUp');
+    playerSpeedUp = game.add.audio('playerSpeedUp');
     zombieAttack = game.add.audio('zombieAttack');
     playerDead = game.add.audio('playerDead',2.5);
     bgm.play();
@@ -625,17 +636,22 @@ function update() {
 }
 
 function pickupItem(item, player) {
-    console.log(item);
+    // console.log(item);
     if (item.key == "potion") {
         if (playersList[player.id].health > 900) {
             playersList[player.id].health = 1000;
         } else {
             playersList[player.id].health += 100;
+            playerHealthUp.play();
         }
     } else if (item.key == "shoes") {
         playersList[player.id].speed += 50;
+                    playerSpeedUp.play();
+
     } else if (item.key == "bulletSpeed") {
         playersList[player.id].fireRate -= 50;
+                    playerFireRateUp.play();
+
     } else {}
     item.kill();
     item.burst.kill();
