@@ -215,7 +215,9 @@ Survive = function(index, game, player) {
 
     var x = 0;
     var y = 0;
-
+    this.barProgress = 80;
+    this.bar = game.add.bitmapData(80, 6);
+    this.barFrame = game.add.bitmapData(90, 10);
     this.game = game;
     this.health = 1000;
     this.player = player;
@@ -228,9 +230,6 @@ Survive = function(index, game, player) {
     this.bullets.setAll('outOfBoundsKill', true);
     this.bullets.setAll('checkWorldBounds', true);
 
-
-
-
     // this.bullets.setAll('width', 100);	
     // this.bullets.setAll('height', 100);	
     // this.localZombie = game.add.group();
@@ -239,7 +238,7 @@ Survive = function(index, game, player) {
     // this.localZombie.setAll('checkWorldBounds', true);
 
     this.currentSpeed = 0;
-    this.speed = 150;
+    this.speed = 500;
     this.fireRate = 300;
     this.nextFire = 0;
     this.alive = true;
@@ -253,10 +252,17 @@ Survive = function(index, game, player) {
     this.attack = this.turret.animations.add('attack', [20, 21, 22], 15, false);
     this.turret.animations.play('breath');
 
+    this.hp = game.add.sprite(x, y, this.bar);
+    this.hpFrame = game.add.sprite(x, y, this.barFrame);
+
+    this.barFrame.context.fillStyle = '#00685e';
+    this.barFrame.context.fillRect(0, 0, 90, 10);
     //this.shadow.anchor.set(0.5);
     this.gameObj.anchor.set(0.5);
     this.turret.anchor.set(0.3, 0.5);
     this.grave.anchor.set(0.4, 0.5);
+    this.hp.anchor.set(0.5, 8);
+    this.hpFrame.anchor.set(0.5, 5);
     this.grave.alpha = 0;
 
 
@@ -275,6 +281,8 @@ Survive = function(index, game, player) {
 };
 
 Survive.prototype.update = function() {
+      game.world.bringToTop(this.hpFrame);
+    game.world.bringToTop(this.hp);
 
     //for (var i in this.input) this.cursor[i] = this.input[i];	
     var inputChanged = (
@@ -347,10 +355,34 @@ Survive.prototype.update = function() {
         game.physics.arcade.velocityFromRotation(this.gameObj.rotation, 0, this.gameObj.body.velocity);
     }
 
+    this.bar.context.clearRect(0, 0, this.bar.width, this.bar.height);
+
+
     this.turret.x = this.gameObj.x;
     this.turret.y = this.gameObj.y;
+    this.hp.x = this.gameObj.x;
+    this.hp.y = this.gameObj.y;
+    this.hpFrame.x = this.gameObj.x;
+    this.hpFrame.y = this.gameObj.y;
     this.grave.x = this.gameObj.x;
     this.grave.y = this.gameObj.y;
+    game.add.tween(this).to({
+        barProgress: this.health / 12.5
+    }, 100, null, true, 0);
+
+    this.bar.context.clearRect(0, 0, this.bar.width, this.bar.height);
+
+    // some simple colour changing to make it look like a health bar
+    if (this.barProgress < 32) {
+        this.bar.context.fillStyle = '#f00';
+    } else if (this.barProgress < 64) {
+        this.bar.context.fillStyle = '#ff0';
+    } else {
+        this.bar.context.fillStyle = '#0f0';
+    }
+
+    // draw the bar
+    this.bar.context.fillRect(0, 0, this.barProgress, 8);
 };
 
 Survive.prototype.fire = function(target) {
@@ -372,6 +404,8 @@ Survive.prototype.kill = function() {
     this.alive = false;
     this.gameObj.kill();
     this.turret.kill();
+    this.hp.kill();
+    this.bar.context.fillRect(0, 0, 0, 8);
     this.grave.alpha = 1;
 }
 
@@ -384,7 +418,7 @@ var game = new Phaser.Game(1024, 768, Phaser.CANVAS, 'shooting-game', {
 
 function preload() {
 
-    // game.load.audio('07', 'assets/07.mp3');
+    game.load.audio('07', 'assets/07.mp3');
     game.load.audio('gunShot', 'assets/gun-shot.mp3');
     game.load.audio('zombieRoar', 'assets/zombie-roar.wav');
     game.load.image('shadow', 'assets/shadow.png');
@@ -427,7 +461,7 @@ function create() {
     gunShot = game.add.audio('gunShot', -0.5);
     zombieRoar = game.add.audio('zombieRoar');
     bgm.play();
-    game.world.setBounds(-100, -100, 1024, 768);
+    game.world.setBounds(-100, -100, 2000, 2000);
     game.stage.disableVisibilityChange = true;
 
     //  Our tiled scrolling background
@@ -592,7 +626,7 @@ function pickupItem(item, player) {
         playersList[player.id].speed += 50;
     } else if (item.key == "bulletSpeed") {
         playersList[player.id].fireRate -= 50;
-    }else {}
+    } else {}
     item.kill();
     item.burst.kill();
     // console.log(player);
@@ -647,16 +681,16 @@ function render() {
     //game.debug.geom(point, 'rgb(0,255,0)');
     if (!ready) return;
     //game.debug.spriteBounds(playersList[myId].gameObj, 'rgb(0,255,0)',true);
-    for (var i in playersList) {
-        game.debug.text('HP: ' + playersList[i].health + '/1000', playersList[i].gameObj.x + 35, playersList[i].gameObj.y + 50);
-        // game.debug.text(playersList[i].gameObj.x,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
-        // game.debug.text(playersList[i].gameObj.y,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 50);
+    // for (var i in playersList) {
+    // game.debug.text('HP: ' + playersList[i].health + '/1000', playersList[i].gameObj.x + 35, playersList[i].gameObj.y + 50);
+    // game.debug.text(playersList[i].gameObj.x,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
+    // game.debug.text(playersList[i].gameObj.y,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 50);
 
-        //game.debug.spriteBounds(playersList[i].gameObj);
-        // game.debug.body(playersList[i].bullets);
-        // game.debug.bodyInfo(playersList[i].bullets);
+    //game.debug.spriteBounds(playersList[i].gameObj);
+    // game.debug.body(playersList[i].bullets);
+    // game.debug.bodyInfo(playersList[i].bullets);
 
-    }
+    // }
     // for (var j in zombieList)
     // {
     // game.debug.body(zombieList[j]);
