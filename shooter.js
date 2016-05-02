@@ -638,10 +638,9 @@ function pickupItem(item, player) {
 
 function zombieATK(zombie, player) {
     zombieList[zombie.id].turret.animations.play('attack', 15, false);
-
+    zombieAttack.play();
     zombieList[zombie.id].turret.events.onAnimationComplete.add(function() {
         playersList[player.id].health--;
-            zombieAttack.play();
     }, this);
     zombieList[zombie.id].turret.events.onAnimationComplete.add(function() {
         zombieList[zombie.id].walk.play();
