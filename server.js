@@ -49,7 +49,7 @@ eurecaServer.exports.handshake = function()
 		{		
       var x = clients[cc].laststate ? clients[cc].laststate.x:  0;
 			var y = clients[cc].laststate ? clients[cc].laststate.y:  0;
-      remote.spawnPlayer(clients[cc].id, 120, 120);		
+      remote.spawnPlayer(clients[cc].id, 1000, 1000);		
 		}
 	}
 }
@@ -67,7 +67,7 @@ eurecaServer.exports.begin = function()
                       // clients[Object.keys(clients)[randomPlayer[i]]].id);		
 		// }
     //debug
-    for (var i = 0; i < 10; i++){
+    for (var i = 0; i < 60; i++){
       remote.spawnZombie(zombieID++, x[i], y[i], 
                       clients[Object.keys(clients)[randomPlayer[i]]].id, randomNum[i]);		
 		}
@@ -112,26 +112,27 @@ function initZombie (){
   y = [];
   randomPlayer = [];
   randomNum = [];
-    for (var i = 0; i < 5; i++)
-    {
-      x.push(Math.floor((Math.random() * 660) + 1));
-      y.push(500);
-      randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
-      randomNum.push(Math.floor((Math.random() * 100) + 1));
-    }
-  for (var i = 0; i < 5; i++)
-    {
-      x.push(-160);
-      y.push(Math.floor((Math.random() * 460) + 1));
-      randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
-      randomNum.push(Math.floor((Math.random() * 100) + 1));
-    }
-  // for (var i = 0; i < 10; i++)
+    // for (var i = 0; i < 5; i++)
     // {
       // x.push(Math.floor((Math.random() * 660) + 1));
-      // y.push(Math.floor((Math.random() * 400) + 1));
+      // y.push(500);
       // randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
+      // randomNum.push(Math.floor((Math.random() * 100) + 1));
     // }
+  // for (var i = 0; i < 5; i++)
+    // {
+      // x.push(-160);
+      // y.push(Math.floor((Math.random() * 460) + 1));
+      // randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
+      // randomNum.push(Math.floor((Math.random() * 100) + 1));
+    // }
+  for (var i = 0; i < 60; i++)
+    {
+      x.push(Math.floor((Math.random() * 2000) + 1));
+      y.push(Math.floor((Math.random() * 2000) + 1));
+      randomPlayer.push(Math.floor(Math.random() * Object.keys(clients).length));
+      randomNum.push(Math.floor((Math.random() * 100) + 1));
+    }
 
   
 }

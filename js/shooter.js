@@ -37,7 +37,8 @@ var playerSpeedUp;
 // var debugObj;
 // var localZombie;
 var key1;
-
+//var radar;
+//var playerDot;
 var eurecaClientSetup = function() {
     var eurecaClient = new Eureca.Client();
     eurecaClient.ready(function(proxy) {
@@ -219,8 +220,8 @@ Survive = function(index, game, player) {
         addZombie: false
     }
 
-    var x = 0;
-    var y = 0;
+    var x = 1000;
+    var y = 1000;
     this.barProgress = 80;
     this.bar = game.add.bitmapData(80, 6);
     this.barFrame = game.add.bitmapData(90, 10);
@@ -244,16 +245,16 @@ Survive = function(index, game, player) {
     // this.localZombie.setAll('checkWorldBounds', true);
 
     this.currentSpeed = 0;
-    this.speed = 500;
-    this.fireRate = 300;
+    this.speed = 200;
+    this.fireRate = 500;
     this.nextFire = 0;
     this.alive = true;
     // this.attack = this.turret.animations.add('attack',[0,1,2,3,4,5,6,7,8],15,false);
     // this.walk = this.turret.animations.add('walk',[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],15,true);
     //this.shadow = game.add.sprite(x, y, 'shadow');
-    this.gameObj = game.add.sprite(x, y, 'shadow');
-    this.turret = game.add.sprite(x, y, 'player');
-    this.grave = game.add.sprite(x, y, 'grave');
+    this.gameObj = game.add.sprite(1000, 1000, 'shadow');
+    this.turret = game.add.sprite(1000, 1000, 'player');
+    this.grave = game.add.sprite(1000, 1000, 'grave');
     this.breath = this.turret.animations.add('breath', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19], 20, true);
     this.attack = this.turret.animations.add('attack', [20, 21, 22], 15, false);
     this.turret.animations.play('breath');
@@ -276,9 +277,9 @@ Survive = function(index, game, player) {
     game.physics.enable(this.gameObj, Phaser.Physics.ARCADE);
     this.gameObj.body.immovable = false;
     this.gameObj.body.collideWorldBounds = true;
-    this.gameObj.body.bounce.setTo(0, 0);
-    this.gameObj.body.velocity.x = 0;
-    this.gameObj.body.velocity.y = 0;
+    // this.gameObj.body.bounce.setTo(0, 0);
+    // this.gameObj.body.velocity.x = 0;
+    // this.gameObj.body.velocity.y = 0;
 
     this.gameObj.angle = 0;
 
@@ -485,8 +486,6 @@ function create() {
     //  Our tiled scrolling background
     land = game.add.tileSprite(0, 0, 1024, 768, 'grass');
     land.fixedToCamera = true;
-    // land.tint = 0xff0000;
-
 
     var emitter = game.add.emitter(game.world.centerX, -100, 400);
 
@@ -542,6 +541,7 @@ function create() {
     game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300);
     game.camera.focusOnXY(0, 0);
 
+game.camera.radar = new Phaser.Rectangle(800, 550, 200, 200);
     cursors = game.input.keyboard.createCursorKeys();
     //setTimeout(removeLogo, 5000);
 
@@ -709,7 +709,12 @@ function render() {
     //game.debug.geom(point, 'rgb(0,255,0)');
     if (!ready) return;
     //game.debug.spriteBounds(playersList[myId].gameObj, 'rgb(0,255,0)',true);
-    // for (var i in playersList) {
+     for (var i in playersList) {
+	 game.camera.player = new Phaser.Rectangle(playersList[i].gameObj.x / 10 + 800,playersList[i].gameObj.y / 10 + 550 , 5, 5);
+
+	 var playerDot = game.camera.player;
+	 game.context.fillStyle = 'rgba(0,0,255,1)';
+	 game.context.fillRect(playerDot.x, playerDot.y, playerDot.width, playerDot.height);
     // game.debug.text('HP: ' + playersList[i].health + '/1000', playersList[i].gameObj.x + 35, playersList[i].gameObj.y + 50);
     // game.debug.text(playersList[i].gameObj.x,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 30);
     // game.debug.text(playersList[i].gameObj.y,playersList[i].gameObj.x + 50, playersList[i].gameObj.y + 50);
@@ -718,9 +723,14 @@ function render() {
     // game.debug.body(playersList[i].bullets);
     // game.debug.bodyInfo(playersList[i].bullets);
 
-    // }
-    // for (var j in zombieList)
-    // {
+     }
+     for (var j in zombieList)
+     {
+	 game.camera.zombie = new Phaser.Rectangle(zombieList[j].gameObj.x / 10 + 800,zombieList[j].gameObj.y / 10 + 550 , 5, 5);
+
+	 var zombieDot = game.camera.zombie;
+	 game.context.fillStyle = 'rgba(255,0,0,1)';
+	 game.context.fillRect(zombieDot.x, zombieDot.y, zombieDot.width, zombieDot.height);
     // game.debug.body(zombieList[j]);
     // game.debug.bodyInfo(zombieList[j]);
     // game.debug.spriteInfo(zombieList[j].gameObj,32,32);
@@ -729,5 +739,11 @@ function render() {
     // }
     // for (var k in itemList){
     // game.debug.spriteBounds(itemList[k]);
-    // }
+     }
+        //game.debug.geom(radar,'#0f0');
+	var radar = game.camera.radar;
+
+	    game.context.fillStyle = 'rgba(0,255,0,0.2)';
+	        game.context.fillRect(radar.x, radar.y, radar.width, radar.height);
+
 }
