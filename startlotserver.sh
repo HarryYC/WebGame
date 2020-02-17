@@ -1,3 +1,19 @@
+#!/bin/bash
+LANG=en_US.UTF-8
+XDG_SESSION_ID=3
+USER=root
+PWD=/root
+HOME=/root
+MAIL=/var/mail/root
+TERM=linux
+SHELL=/bin/bash
+SHLVL=1
+LOGNAME=root
+XDG_RUNTIME_DIR=/run/user/0
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+_=/usr/bin/env
+
+
 startlotserver(){
 	apt-get update
 	apt-get install ethtool
