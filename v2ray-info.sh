@@ -104,22 +104,21 @@ _v2_info() {
 		fi
 	else
 		echo
-		echo -e "地址 (Address) = ${ip}"
-		echo
-		echo -e "端口 (Port) = $v2ray_port"
-		echo
-		echo -e "用户ID (User ID / UUID) = ${v2ray_id}"
-		echo
+		echo -e "地址 (Address):"
+		echo -e "${ip}"
+		echo -e "端口 (Port): "
+		echo -e "$v2ray_port"
+		echo -e "用户ID (User ID / UUID):"
+		echo -e "${v2ray_id}"
 		#echo -e "额外ID (Alter Id) = ${alterId}"
 		#echo
-		echo -e "传输协议 (Network) = ${net}"
-		echo
-		echo -e "伪装类型 (header type) = ${header}"
-		echo
-		echo -e "客户端下载： "
+		echo -e "传输协议 (Network):"
+		echo -e "${net}"
+		echo -e "伪装类型 (header type):"
+		echo -e "${header}"
+		echo -e "客户端下载："
 		echo -e "http://${ip}:65432/public/clients"
-		echo
-		echo -e "您可以登录: "
+		echo -e "您可以登录:"
 		echo -e "http://${ip}:65432 "
 		echo -e "创建新账号进行二次销售， 用户名和密码默认都为：admin"
 		echo
@@ -134,5 +133,5 @@ _v2_info() {
 		echo " 备注: 广告拦截已开启.."
 		echo
 	fi
-	echo "---------- END -------------"
+	#echo "---------- END -------------"
 }
