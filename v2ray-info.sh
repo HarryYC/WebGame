@@ -73,7 +73,7 @@ _v2_args() {
 _v2_info() {
 	echo
 	echo
-	echo "---------- V2Ray 配置信息 -------------"
+	echo "---------- V2Ray 配置信息"
 	if [[ $v2ray_transport == [45] ]]; then
 		if [[ ! $caddy ]]; then
 			echo
@@ -116,9 +116,12 @@ _v2_info() {
 		echo
 		echo -e "伪装类型 (header type) = ${header}"
 		echo
-		echo -e "客户端下载： http://${ip}:65432/public/clients"
+		echo -e "客户端下载： "
+		echo -e "http://${ip}:65432/public/clients"
 		echo
-		echo -e "您可以登录:  http://${ip}:65432 创建新账号进行二次销售， 用户名和密码默认都为：admin"
+		echo -e "您可以登录: "
+		echo -e "http://${ip}:65432 "
+		echo -e "创建新账号进行二次销售， 用户名和密码默认都为：admin"
 		echo
 	fi
 	if [[ $v2ray_transport -ge 18 ]] && [[ $ban_ad ]]; then
