@@ -104,21 +104,21 @@ _v2_info() {
 		fi
 	else
 		echo
-		echo -e "$yellow 地址 (Address) = $cyan${ip}$none"
+		echo -e "地址 (Address) = ${ip}"
 		echo
-		echo -e "$yellow 端口 (Port) = $cyan$v2ray_port$none"
+		echo -e "端口 (Port) = $v2ray_port"
 		echo
-		echo -e "$yellow 用户ID (User ID / UUID) = $cyan${v2ray_id}$none"
+		echo -e "用户ID (User ID / UUID) = ${v2ray_id}"
 		echo
-		#echo -e "$yellow 额外ID (Alter Id) = ${cyan}${alterId}${none}"
+		#echo -e "额外ID (Alter Id) = ${alterId}"
 		#echo
-		echo -e "$yellow 传输协议 (Network) = ${cyan}${net}$none"
+		echo -e "传输协议 (Network) = ${net}"
 		echo
-		echo -e "$yellow 伪装类型 (header type) = ${cyan}${header}$none"
+		echo -e "伪装类型 (header type) = ${header}"
 		echo
-		echo -e "$yellow 客户端下载： http://${ip}:65432/public/clients"
+		echo -e "客户端下载： http://${ip}:65432/public/clients"
 		echo
-		echo -e "$yellow 您可以登录:  http://${ip}:65432 创建新账号进行二次销售， 用户名和密码默认都为：admin"
+		echo -e "您可以登录:  http://${ip}:65432 创建新账号进行二次销售， 用户名和密码默认都为：admin"
 		echo
 	fi
 	if [[ $v2ray_transport -ge 18 ]] && [[ $ban_ad ]]; then
