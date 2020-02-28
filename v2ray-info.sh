@@ -105,9 +105,9 @@ _v2_info() {
 	else
 		echo
 		echo -e "地址 (Address): ${ip}"
-		echo -e "端口 (Port): $v2ray_port"
+		echo -e "端口 (Port): REPLACE_THIS_PORT"
 		echo -e "用户ID (User ID / UUID):"
-		echo -e "${v2ray_id}"
+		echo -e "REPLACE_THIS_UUID"
 		#echo -e "额外ID (Alter Id) = ${alterId}"
 		#echo
 		echo -e "传输协议 (Network): ${net}"
